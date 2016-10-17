@@ -6,6 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import net.usrlib.cms.sql.CourseAssignmentsTable;
+import net.usrlib.cms.sql.CoursePrerequisitesTable;
+import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.RecordsTable;
 import net.usrlib.cms.sql.UsersTable;
@@ -57,6 +60,15 @@ public class DbHelper {
 
 			preparedStatement = connection.prepareStatement(RecordsTable.CREATE_TABLE);
 			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CourseAssignmentsTable.CREATE_TABLE);
+			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CoursePrerequisitesTable.CREATE_TABLE);
+			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CourseRequestsTable.CREATE_TABLE);
+			preparedStatement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -79,6 +91,15 @@ public class DbHelper {
 			preparedStatement.execute();
 
 			preparedStatement = connection.prepareStatement(RecordsTable.DROP_TABLE);
+			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CourseAssignmentsTable.DROP_TABLE);
+			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CoursePrerequisitesTable.DROP_TABLE);
+			preparedStatement.execute();
+
+			preparedStatement = connection.prepareStatement(CourseRequestsTable.DROP_TABLE);
 			preparedStatement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();

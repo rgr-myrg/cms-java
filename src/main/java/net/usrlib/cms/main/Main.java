@@ -21,15 +21,22 @@ public class Main {
 		Digest.connectToDb();
 
 		// Digest Output
-		System.out.println(Digest.getNumberOfCourses());
-
+		System.out.println(Digest.getNumberOfCourseRequests());
+/*
+(1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
+(2) the number of valid (granted) requests
+(3) the number of requests that were denied because of one or more missing prerequisites
+(4) the number of requests that were denied the course was already taken
+(5) the number of requests that were denied because of a lack of available seats
+ */
 		Digest.disconnectFromDb();
 	}
 
 	public static void enterCommandLoop() {
 		final Scanner scanner = new Scanner(System.in);
+
 		do {
-			System.out.print(System.lineSeparator() + "Course Management System. Enter 'quit' when finished: ");
+			System.out.print(System.lineSeparator() + "$main: ");
 
 			String command = scanner.next();
 
@@ -63,7 +70,7 @@ public class Main {
 	}
 
 	public static void exitCommandLoop() {
-		log("> stopping the command loop.");
+		log("> stopping the command loop");
 		DbHelper.dropTables();
 	}
 

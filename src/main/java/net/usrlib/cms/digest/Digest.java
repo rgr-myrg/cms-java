@@ -9,6 +9,7 @@ import net.usrlib.cms.data.CoursesData;
 import net.usrlib.cms.data.InstructorsData;
 import net.usrlib.cms.data.RecordsData;
 import net.usrlib.cms.data.StudentsData;
+import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.RecordsTable;
 import net.usrlib.cms.sql.UsersTable;
@@ -36,10 +37,9 @@ public class Digest {
 		InstructorsData.load();
 		RecordsData.load();
 		StudentsData.load();
-		// TODO: Uncomment when csv files are available
-//		CourseAssignmentsData.load();
-//		CoursePrerequisitesData.load();
-//		CourseRequestsData.load();
+		CourseAssignmentsData.load();
+		CoursePrerequisitesData.load();
+		CourseRequestsData.load();
 	}
 
 	public static final int getNumberOfStudentRecords() {
@@ -80,6 +80,11 @@ public class Digest {
 
 	public static final int getNumberOfSummerSemesterCourses() {
 		return DbHelper.getCountOf(connection, CoursesTable.SELECT_COUNT_FOR_SUMMER_COURSES);
+	}
+
+	// Assignment 5 Getters
+	public static final int getNumberOfCourseRequests() {
+		return DbHelper.getCountOf(connection, CourseRequestsTable.SELECT_COUNT);
 	}
 }
 

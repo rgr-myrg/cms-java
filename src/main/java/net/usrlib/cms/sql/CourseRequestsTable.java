@@ -7,7 +7,7 @@ public class CourseRequestsTable {
 	public static final String STUDENT_ID_COLUMN  = "studentUuid";
 	public static final String COURSE_ID_COLUMN = "courseId";
 
-	public static final String CREATE = String.format(
+	public static final String CREATE_TABLE = String.format(
 			"CREATE TABLE IF NOT EXISTS %s (" 
 					+ "%s INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "%s LONG NOT NULL,"
@@ -20,7 +20,7 @@ public class CourseRequestsTable {
 	public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
 
 	public static final String INSERT_SQL = String.format(
-			"INSERT INTO %s (%d, %d) VALUES (?, ?)", 
+			"INSERT INTO %s (%s, %s) VALUES (?, ?)", 
 			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
 
