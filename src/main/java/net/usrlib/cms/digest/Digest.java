@@ -1,7 +1,10 @@
 package net.usrlib.cms.digest;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import net.usrlib.cms.course.Course;
 import net.usrlib.cms.data.CourseAssignmentsData;
 import net.usrlib.cms.data.CoursePrerequisitesData;
 import net.usrlib.cms.data.CourseRequestsData;
@@ -9,10 +12,13 @@ import net.usrlib.cms.data.CoursesData;
 import net.usrlib.cms.data.InstructorsData;
 import net.usrlib.cms.data.RecordsData;
 import net.usrlib.cms.data.StudentsData;
+import net.usrlib.cms.sql.CoursePrerequisitesTable;
 import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.RecordsTable;
 import net.usrlib.cms.sql.UsersTable;
+import net.usrlib.cms.user.Student;
+import net.usrlib.cms.user.UserRole;
 import net.usrlib.cms.util.DbHelper;
 
 public class Digest {
@@ -85,6 +91,48 @@ public class Digest {
 	// Assignment 5 Getters
 	public static final int getNumberOfCourseRequests() {
 		return DbHelper.getCountOf(connection, CourseRequestsTable.SELECT_COUNT);
+	}
+
+	public static final int getNumberOfValidCourseRequests() {
+		System.out.println("getNumberOfValidCourseRequests");
+		// select from requests table
+		ResultSet resultSet = DbHelper.doSql(connection, CourseRequestsTable.SELECT_ALL);
+
+		try {
+			while (resultSet.next()) {
+				int studentUuid = resultSet.getInt(CourseRequestsTable.STUDENT_ID_COLUMN);
+				int courseId = resultSet.getInt(CourseRequestsTable.COURSE_ID_COLUMN);
+
+				System.out.println("-> studentUuid: " + studentUuid);
+				System.out.println("-> courseId: " + courseId);
+
+				ResultSet studentResultSet = DbHelper.doSql(connection, UsersTable.SELECT_STUDENT_BY_ID + studentUuid);
+
+				Student student = new Student(
+					studentUuid,
+					studentResultSet.getString(UsersTable.NAME_COLUMN),
+					studentResultSet.getString(UsersTable.ADDRESS_COLUMN),
+					studentResultSet.getString(UsersTable.PHONE_COLUMN),
+					UserRole.STUDENT
+				);
+
+				Course course = new Course();
+				course.setCourseId(courseId);
+
+				final ResultSet preReqResultSet = DbHelper.doSql(connection, CoursePrerequisitesTable.SELECT_PREREQUISITES + courseId);
+				while (preReqResultSet.next()) {
+					System.out.println("-> preReqResultSet: " + preReqResultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
+				}
+	
+				student.registerForCourse(courseId);
+
+				//System.out.println(studentUuid + ":" + courseId + ":" + student.getPhone());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		// process each entry
+		return 0;
 	}
 }
 

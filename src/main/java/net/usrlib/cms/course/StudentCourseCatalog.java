@@ -1,6 +1,9 @@
-package net.usrlib.cms;
+package net.usrlib.cms.course;
 
 import java.util.List;
+
+import net.usrlib.cms.user.AcademicCouncelor;
+import net.usrlib.cms.user.Student;
 
 public class StudentCourseCatalog {
 	protected long catalogId;
@@ -10,8 +13,8 @@ public class StudentCourseCatalog {
 
 	public StudentCourseCatalog(final Student student, final AcademicCouncelor academicCouncelor) {
 		this.catalogId = -1;
-		this.studentUuid = student.uuid;
-		this.academicCounselorUuid = academicCouncelor.uuid;
+		this.studentUuid = student.getUuid();
+		this.academicCounselorUuid = academicCouncelor.getUuid();
 	}
 
 	public boolean addCourseToStudentCatalog(Course course) {
@@ -25,7 +28,7 @@ public class StudentCourseCatalog {
 	}
 
 	public boolean saveCourseCatalog() {
-		DbHelper.saveCourseCatalog(this);
+		//DbHelper.saveCourseCatalog(this);
 		return true;
 	}
 }

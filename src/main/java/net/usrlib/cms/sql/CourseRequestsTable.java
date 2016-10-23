@@ -10,8 +10,8 @@ public class CourseRequestsTable {
 	public static final String CREATE_TABLE = String.format(
 			"CREATE TABLE IF NOT EXISTS %s (" 
 					+ "%s INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ "%s LONG NOT NULL,"
-					+ "%s LONG NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
 					+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
 					+ ")",
 					TABLE_NAME, ID_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
@@ -27,6 +27,11 @@ public class CourseRequestsTable {
 	public static final String SELECT_COUNT = String.format(
 			"SELECT COUNT(%s) AS total FROM %s", 
 			ID_COLUMN, TABLE_NAME
+	);
+
+	public static final String SELECT_ALL = String.format(
+			"select * FROM %s",
+			TABLE_NAME
 	);
 }
 

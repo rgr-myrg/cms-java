@@ -1,5 +1,7 @@
 package net.usrlib.cms;
 
+import net.usrlib.cms.course.Course;
+
 public class Admin extends User {
 	//protected UserRole role = UserRole.ADMIN;
 

@@ -36,7 +36,7 @@ public class CoursesData extends CsvDataLoader {
 				//System.out.println("----> " + match.group(1) + ":" + match.group(2) + ":" + match.group(3));
 				try {
 					preparedStatement = connection.prepareStatement(CoursesTable.INSERT_SQL);
-					preparedStatement.setLong(1, Long.valueOf(match.group(1)));
+					preparedStatement.setInt(1, Integer.valueOf(match.group(1)));
 					preparedStatement.setString(2, match.group(2));
 					preparedStatement.setString(3, match.group(3));
 					preparedStatement.execute();

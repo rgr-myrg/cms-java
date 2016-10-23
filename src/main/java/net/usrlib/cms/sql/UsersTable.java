@@ -16,10 +16,10 @@ public class UsersTable {
 	public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
 											+ TABLE_NAME + "("
 												+ ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-												+ USER_ID_COLUMN + " LONG NOT NULL,"
+												+ USER_ID_COLUMN + " INTEGER NOT NULL,"
 												+ NAME_COLUMN + " TEXT NOT NULL,"
 												+ ADDRESS_COLUMN + " TEXT,"
-												+ PHONE_COLUMN + " LONG,"
+												+ PHONE_COLUMN + " TEXT,"
 												+ USER_ROLE + " INTEGER NOT NULL,"
 												+ TIMESTAMP_COLUMN + " DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
 											//	+ "UNIQUE (" + NAME_COLUMN + ") ON CONFLICT REPLACE"
@@ -67,4 +67,6 @@ public class UsersTable {
 											+ PHONE_COLUMN + ","
 											+ USER_ROLE
 											+ " FROM " + TABLE_NAME;
+
+	public static final String SELECT_STUDENT_BY_ID = String.format("%s WHERE %s = ", SELECT_SQL, USER_ID_COLUMN);
 }

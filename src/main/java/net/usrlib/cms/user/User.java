@@ -1,60 +1,60 @@
 package net.usrlib.cms.user;
 
-import java.util.List;
-
 public abstract class User {
-	protected long uuid;
-	protected String firstName;
-	protected String lastName;
+	protected int uuid;
+	protected String name;
 	protected UserRole userRole;
-	protected List<Address> addressList;
-	protected List<Phone> phoneList;
+	protected String address;
+	protected String phone;
 
-	public void setUuid(long uuid) {
+	public User() {
+	}
+
+	public User(int uuid, String name, String address, String phone, UserRole userRole) {
+		setUuid(uuid);
+		setName(name);
+		setAddress(address);
+		setPhone(phone);
+		setUserRole(userRole);
+	}
+
+	public void setUuid(int uuid) {
 		this.uuid = uuid;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public void setUserRole(UserRole userRole) {
 		this.userRole = userRole;
 	}
 
-	public void setAddressList(List<Address> addressList) {
-		this.addressList = addressList;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public void setPhoneList(List<Phone> phoneList) {
-		this.phoneList = phoneList;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public long getUuid() {
 		return uuid;
 	}
 
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
+	public String getName() {
+		return name;
 	}
 
 	public UserRole getUserRole() {
 		return userRole;
 	}
 
-	public List<Address> getAddressList() {
-		return addressList;
+	public String getAddress() {
+		return address;
 	}
 
-	public List<Phone> getPhoneList() {
-		return phoneList;
+	public String getPhone() {
+		return phone;
 	}
 }

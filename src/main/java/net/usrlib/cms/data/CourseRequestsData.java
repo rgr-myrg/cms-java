@@ -30,8 +30,8 @@ public class CourseRequestsData extends CsvDataLoader {
 			if (parts.length > 0) {
 				try {
 					preparedStatement = connection.prepareStatement(CourseRequestsTable.INSERT_SQL);
-					preparedStatement.setLong(1, Long.valueOf(parts[0]));
-					preparedStatement.setLong(2, Long.valueOf(parts[1]));
+					preparedStatement.setInt(1, Integer.valueOf(parts[0]));
+					preparedStatement.setInt(2, Integer.valueOf(parts[1]));
 
 					preparedStatement.execute();
 				} catch (SQLException e) {

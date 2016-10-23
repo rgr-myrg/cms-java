@@ -31,9 +31,9 @@ public class RecordsData extends CsvDataLoader {
 			if (parts.length > 0) {
 				try {
 					preparedStatement = connection.prepareStatement(RecordsTable.INSERT_SQL);
-					preparedStatement.setLong(1, Long.valueOf(parts[0]));
-					preparedStatement.setLong(2, Long.valueOf(parts[1]));
-					preparedStatement.setLong(3, Long.valueOf(parts[2]));
+					preparedStatement.setInt(1, Integer.valueOf(parts[0]));
+					preparedStatement.setInt(2, Integer.valueOf(parts[1]));
+					preparedStatement.setInt(3, Integer.valueOf(parts[2]));
 					preparedStatement.setString(4, parts[3]);
 					preparedStatement.setInt(5, LetterGrade.valueOf(parts[4]).ordinal());
 

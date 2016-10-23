@@ -11,9 +11,9 @@ public class CourseAssignmentsTable {
 	public static final String CREATE_TABLE = String.format(
 			"CREATE TABLE IF NOT EXISTS %s (" 
 					+ "%s INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ "%s LONG NOT NULL,"
-					+ "%s LONG NOT NULL,"
-					+ "%s LONG NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
 					+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
 					+ ")",
 					TABLE_NAME, ID_COLUMN, INSTRUCTOR_ID_COLUMN, COURSE_ID_COLUMN, CAPACITY_COLUMN

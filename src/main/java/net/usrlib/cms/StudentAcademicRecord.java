@@ -2,6 +2,8 @@ package net.usrlib.cms;
 
 import java.sql.Date;
 
+import net.usrlib.cms.course.Course;
+
 public class StudentAcademicRecord {
 	protected long studentAcademicRecordId;
 	protected long studentUuid;
@@ -17,7 +19,7 @@ public class StudentAcademicRecord {
 		this.studentAcademicRecordId = -1;
 		this.studentUuid = student.uuid;
 		this.instructorUuid = instructor.uuid;
-		this.courseId = course.courseId;
+	//	this.courseId = course.courseId;
 	}
 
 	public boolean addComments(final String comments) {
@@ -31,7 +33,7 @@ public class StudentAcademicRecord {
 	}
 
 	public boolean saveAcademicRecord() {
-		DbHelper.saveAcademicRecord(this);
+		//DbHelper.saveAcademicRecord(this);
 		return true;
 	}
 }

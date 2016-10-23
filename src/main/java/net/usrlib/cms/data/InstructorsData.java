@@ -31,10 +31,10 @@ public class InstructorsData extends CsvDataLoader {
 			if (parts.length > 0) {
 				try {
 					preparedStatement = connection.prepareStatement(UsersTable.INSERT_SQL);
-					preparedStatement.setLong(1, Long.valueOf(parts[0]));
+					preparedStatement.setInt(1, Integer.valueOf(parts[0]));
 					preparedStatement.setString(2, parts[1]);
 					preparedStatement.setString(3, parts[2]);
-					preparedStatement.setLong(4, Long.valueOf(parts[3]));
+					preparedStatement.setString(4, parts[3]);
 					preparedStatement.setInt(5, UserRole.INSTRUCTOR.ordinal());
 
 					preparedStatement.execute();

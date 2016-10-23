@@ -22,6 +22,7 @@ public class Main {
 
 		// Digest Output
 		System.out.println(Digest.getNumberOfCourseRequests());
+		System.out.println(Digest.getNumberOfValidCourseRequests());
 /*
 (1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
 (2) the number of valid (granted) requests

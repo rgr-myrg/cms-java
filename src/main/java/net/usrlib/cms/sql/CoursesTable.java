@@ -11,7 +11,7 @@ public class CoursesTable {
 	public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
 											+ TABLE_NAME + "("
 												+ ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-												+ COURSE_ID_COLUMN + " LONG NOT NULL,"
+												+ COURSE_ID_COLUMN + " INTEGER NOT NULL,"
 												+ COURSE_TITLE_COLUMN + " TEXT NOT NULL,"
 												+ SEMESTERS_COLUMN + " TEXT,"
 												+ TIMESTAMP_COLUMN + " DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,"

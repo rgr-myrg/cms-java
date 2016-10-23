@@ -2,6 +2,8 @@ package net.usrlib.cms;
 
 import java.util.List;
 
+import net.usrlib.cms.course.Course;
+
 public class Instructor extends User {
 	protected List<Course> coursesTaught;
 
