@@ -20,6 +20,7 @@ public class Course {
 	private List<Semester> semestersOffered = new ArrayList<>();;
 	private List<Course> prerequisites = new ArrayList<>();
 	private List<CourseAssignment> assignments = new ArrayList<>();
+	private CourseType courseType;
 	private CourseStatus courseStatus = CourseStatus.REGISTRATION_OPEN;
 
 	public Course(final int courseId) {
@@ -43,36 +44,15 @@ public class Course {
 	}
 
 	public List<Course> getPrerequisites() {
-		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
-		final ResultSet resultSet = DbHelper.doSql(sqlString);
-
-		if (Log.isDebug()) {
-			Logger.debug(TAG, sqlString);
-		}
-
-		try {
-			if (!resultSet.isBeforeFirst()) {
-				if (Log.isDebug()) {
-					Logger.debug(TAG, "No prerequisite data found for this course");
-				}
-
-				prerequisites = new ArrayList<>();
-			} else {
-				while (resultSet.next()) {
-					prerequisites.add(new Course(resultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN)));
-				}
-			}
-
-			resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
 		return prerequisites;
 	}
 
 	public List<CourseAssignment> getAssignments() {
 		return assignments;
+	}
+
+	public CourseType getCourseType() {
+		return courseType;
 	}
 
 	public CourseStatus getCourseStatus() {
@@ -126,5 +106,34 @@ public class Course {
 				break;
 			}
 		}
+	}
+
+	public List<Course> fetchCoursePrerequisites() {
+		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
+		final ResultSet resultSet = DbHelper.doSql(sqlString);
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+		}
+
+		try {
+			if (!resultSet.isBeforeFirst()) {
+				if (Log.isDebug()) {
+					Logger.debug(TAG, "No prerequisite data found for this course");
+				}
+
+				prerequisites = new ArrayList<>();
+			} else {
+				while (resultSet.next()) {
+					prerequisites.add(new Course(resultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN)));
+				}
+			}
+
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return prerequisites;
 	}
 }

@@ -102,7 +102,7 @@ public class Student extends User {
 	}
 
 	public boolean hasCoursePrerequisites(final Course course) throws SQLException {
-		final List<Course> preRequisites = course.getPrerequisites();
+		final List<Course> preRequisites = course.fetchCoursePrerequisites();
 		boolean result = true;
 
 		if (preRequisites.size() == 0 || preRequisites.isEmpty()) {

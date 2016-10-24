@@ -17,6 +17,47 @@ public class Admin extends User {
 	private int coursesAlreadyTakenCount = 0;
 	private int noAvailableSeatsCount = 0;
 
+	public int getMissingPreReqsCount() {
+		return missingPreReqsCount;
+	}
+
+	public int getCoursesAlreadyTakenCount() {
+		return coursesAlreadyTakenCount;
+	}
+
+	public int getNoAvailableSeatsCount() {
+		return noAvailableSeatsCount;
+	}
+
+	public boolean enrollNewStudent(final Student student) {
+		return true;
+	}
+
+	public boolean disenrollStudent(final Student student) {
+		return true;
+	}
+
+	public boolean createNewCourse(final Course course) {
+		return true;
+	}
+
+	public boolean updateCourse(final Course course) {
+		return true;
+	}
+
+	public boolean removeCourse(final Course course) {
+		return true;
+	}
+
+	public void setCurrentSemester() {	
+	}
+
+	public void addCourseAssignment() {
+	}
+
+	public void removeCourseAssignment() {
+	}
+
 	public int processRegistrationRequests() {
 		final ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_OPEN_REQUESTS);
 		int validRequests = 0;
@@ -91,17 +132,5 @@ public class Admin extends User {
 		}
 
 		return validRequest;
-	}
-
-	public int getMissingPreReqsCount() {
-		return missingPreReqsCount;
-	}
-
-	public int getCoursesAlreadyTakenCount() {
-		return coursesAlreadyTakenCount;
-	}
-
-	public int getNoAvailableSeatsCount() {
-		return noAvailableSeatsCount;
 	}
 }
