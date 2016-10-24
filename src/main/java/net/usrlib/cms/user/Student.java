@@ -10,8 +10,6 @@ import net.usrlib.cms.course.Course;
 import net.usrlib.cms.course.LetterGrade;
 import net.usrlib.cms.course.StudentCourseCatalog;
 import net.usrlib.cms.sql.AcademicRecordsTable;
-import net.usrlib.cms.sql.CourseAssignmentsTable;
-import net.usrlib.cms.sql.CoursePrerequisitesTable;
 import net.usrlib.cms.sql.UsersTable;
 import net.usrlib.cms.util.DbHelper;
 
@@ -70,7 +68,10 @@ public class Student extends User {
 //			} else {
 //				System.out.println("checkCoursePrerequisites NOPE!. Deny this request");
 //			}
-			if (hasCoursePrerequisites(courseId) && !hasTakenCoursePreviously(courseId) && isCourseSeatAvailable(courseId)) {
+
+			Course course = new Course(courseId);
+
+			if (hasCoursePrerequisites(course) && !hasTakenCoursePreviously(course) && course.isCourseSeatAvailable()) {
 				System.out.println("Request is Valid");
 				// process request and register the student
 				// decrement course capacity
@@ -85,32 +86,32 @@ public class Student extends User {
 		// check available seats
 	}
 
-	public boolean isCourseSeatAvailable(final int courseId) throws SQLException {
-		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
-				.replaceFirst("\\?", String.valueOf(courseId));
-		final ResultSet resultSet = DbHelper.doSql(sqlString);
+//	public boolean isCourseSeatAvailable(final int courseId) throws SQLException {
+//		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+//				.replaceFirst("\\?", String.valueOf(courseId));
+//		final ResultSet resultSet = DbHelper.doSql(sqlString);
+//
+//		int capacityCount = 0;
+//
+//		if (!resultSet.isBeforeFirst()) {
+//			System.out.println("> No capacity found for this course. Done.");
+//			resultSet.close();
+//			return false;
+//		}
+//
+//		while (resultSet.next()) {
+//			capacityCount += resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+//		}
+//
+//		resultSet.close();
+//		System.out.println("capacityCount: " + capacityCount);
+//		return capacityCount > 0;
+//	}
 
-		int capacityCount = 0;
-
-		if (!resultSet.isBeforeFirst()) {
-			System.out.println("> No capacity found for this course. Done.");
-			resultSet.close();
-			return false;
-		}
-
-		while (resultSet.next()) {
-			capacityCount += resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
-		}
-
-		resultSet.close();
-		System.out.println("capacityCount: " + capacityCount);
-		return capacityCount > 0;
-	}
-
-	public boolean hasTakenCoursePreviously(final int courseId) throws SQLException {
+	public boolean hasTakenCoursePreviously(final Course course) throws SQLException {
 		final String sqlString = AcademicRecordsTable.SELECT_COURSE
 				.replaceFirst("\\?", String.valueOf(uuid))
-				.replaceFirst("\\?", String.valueOf(courseId));
+				.replaceFirst("\\?", String.valueOf(course.getCourseId()));
 
 		final ResultSet resultSet = DbHelper.doSql(sqlString);
 
@@ -136,24 +137,20 @@ public class Student extends User {
 		return result;
 	}
 
-	public boolean hasCoursePrerequisites(final int courseId) throws SQLException {
-		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
-		final ResultSet reqResultSet = DbHelper.doSql(sqlString);
+	public boolean hasCoursePrerequisites(final Course course) throws SQLException {
+		final List<Course> preRequisites = course.getPrerequisites();
 		boolean result = true;
 
-		System.out.println("checkCoursePrerequisites: " + sqlString);
-
-		if (!reqResultSet.isBeforeFirst()) {
+		if (preRequisites.size() == 0 || preRequisites.isEmpty()) {
 			System.out.println("No prerequisite data found for this course. Done.");
-			reqResultSet.close();
 			return result;
 		}
 
-		while (reqResultSet.next()) {
-			System.out.println("> checking preReqCourseId: " + reqResultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
+		for(Course item : preRequisites) {
+			System.out.println("> checking preReqCourseId: " + item.getCourseId());
 			String sql = AcademicRecordsTable.SELECT_COURSE
 					.replaceFirst("\\?", String.valueOf(uuid))
-					.replaceFirst("\\?", reqResultSet.getString(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
+					.replaceFirst("\\?", String.valueOf(item.getCourseId()));
 
 			System.out.println("SQL: " + sql);
 
@@ -181,7 +178,55 @@ public class Student extends User {
 			}
 		}
 
-		reqResultSet.close();
 		return result;
 	}
+
+//	public boolean hasCoursePrerequisites(final int courseId) throws SQLException {
+//		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
+//		final ResultSet reqResultSet = DbHelper.doSql(sqlString);
+//		boolean result = true;
+//
+//		System.out.println("checkCoursePrerequisites: " + sqlString);
+//
+//		if (!reqResultSet.isBeforeFirst()) {
+//			System.out.println("No prerequisite data found for this course. Done.");
+//			reqResultSet.close();
+//			return result;
+//		}
+//
+//		while (reqResultSet.next()) {
+//			System.out.println("> checking preReqCourseId: " + reqResultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
+//			String sql = AcademicRecordsTable.SELECT_COURSE
+//					.replaceFirst("\\?", String.valueOf(uuid))
+//					.replaceFirst("\\?", reqResultSet.getString(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
+//
+//			System.out.println("SQL: " + sql);
+//
+//			ResultSet academicRecordsResultSet = DbHelper.doSql(sql);
+//
+//			if (!academicRecordsResultSet.isBeforeFirst()) {
+//				System.out.println("No academicRecordsResultSet found.");
+//				academicRecordsResultSet.close();
+//				result = false;
+//				break;
+//			}
+//
+//			academicRecordsResultSet.next();
+//
+//			int letterGrade = academicRecordsResultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN);
+//
+//			academicRecordsResultSet.close();
+//
+//			System.out.println("LETTER_GRADE: " + letterGrade);
+//
+//			if (letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal()) {
+//				result = false;
+//			} else {
+//				result = true;
+//			}
+//		}
+//
+//		reqResultSet.close();
+//		return result;
+//	}
 }

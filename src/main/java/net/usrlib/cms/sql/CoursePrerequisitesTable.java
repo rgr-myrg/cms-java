@@ -30,8 +30,8 @@ public class CoursePrerequisitesTable {
 	);
 
 	public static final String SELECT_PREREQUISITES = String.format(
-			"SELECT %s FROM %s WHERE %s = ?", 
-			PREREQ_ID_COLUMN, TABLE_NAME, COURSE_ID_COLUMN
+			"SELECT * FROM %s WHERE %s = ?", 
+			TABLE_NAME, COURSE_ID_COLUMN
 	);
 }
 
