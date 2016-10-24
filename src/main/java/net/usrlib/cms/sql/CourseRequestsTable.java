@@ -34,14 +34,45 @@ public class CourseRequestsTable {
 	);
 
 	public static final String SELECT_OPEN_REQUESTS = String.format(
-			"select * FROM %s WHERE %s = %d",
+			"SELECT * FROM %s WHERE %s = %d",
 			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.OPEN.ordinal()
 	);
 
 	public static final String UPDATE_REQUESTS_TO_PROCESSED = String.format(
 			"UPDATE %s SET %s = %d WHERE %s = ? AND %s = ?",
-			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.PROCESSED.ordinal(), STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal(), STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
+
+	public static final String SELECT_APPROVED_REQUESTS = String.format(
+			"SELECT * FROM %s WHERE %s = %d",
+			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal()
+	);
+
+	public static final String SELECT_APPROVED_REQUESTS_INFO = String.format(
+			"SELECT COURSE_REQUESTS.studentUuid AS userUuid, COURSE_REQUESTS.courseId AS courseId, "
+				+ "USERS.name AS name, COURSES.courseTitle AS courseTitle "
+				+ "FROM COURSE_REQUESTS "
+				+ "LEFT JOIN USERS ON COURSE_REQUESTS.studentUuid = USERS.userUuid "
+				+ "LEFT JOIN COURSES ON COURSE_REQUESTS.courseId = COURSES.courseId "
+				+ "WHERE %s = %d",
+			REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal()
+	);
+
+	/*
+	 * SELECT
+  Songs._id AS song_id,
+  Songs.name AS song_name, 
+  Songs.length, 
+  Songs.artist_id AS artist_id, 
+  Artists.name AS artist_name, 
+  Songs.album_id AS album_id, 
+  Albums.name AS album_name
+FROM 
+ Songs 
+ LEFT JOIN Artists ON Songs.artist_id = Artists._id
+ LEFT JOIN Albums ON Songs.album_id = Albums._id
+
+	 */
 }
 
 /*

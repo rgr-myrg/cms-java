@@ -1,5 +1,7 @@
 package net.usrlib.cms.digest;
 
+import java.util.List;
+
 import net.usrlib.cms.data.CourseAssignmentsData;
 import net.usrlib.cms.data.CoursePrerequisitesData;
 import net.usrlib.cms.data.CourseRequestsData;
@@ -93,6 +95,10 @@ public class Digest {
 
 	public static final int getNumberOfNoOfAvailableSeats() {
 		return admin.getNoAvailableSeatsCount();
+	}
+
+	public static final List<String> fetchApprovedRequests() {
+		return admin.fetchApprovedRequests();
 	}
 }
 

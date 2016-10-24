@@ -2,12 +2,16 @@ package net.usrlib.cms.user;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.usrlib.cms.course.Course;
 import net.usrlib.cms.course.CourseDeniedCategory;
 import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.logger.Logger;
 import net.usrlib.cms.sql.CourseRequestsTable;
+import net.usrlib.cms.sql.CoursesTable;
+import net.usrlib.cms.sql.UsersTable;
 import net.usrlib.cms.util.DbHelper;
 
 public class Admin extends User {
@@ -108,7 +112,7 @@ public class Admin extends User {
 				validRequest = true;
 			} else {
 				if (Log.isDebug()) {
-					Logger.debug(TAG,"Request is DENIED. Reason: " + student.getCourseDeniedReason());
+					Logger.debug(TAG, "Request is DENIED. Reason: " + student.getCourseDeniedReason());
 				}
 
 				final CourseDeniedCategory deniedReason = student.getCourseDeniedReason();
@@ -132,5 +136,31 @@ public class Admin extends User {
 		}
 
 		return validRequest;
+	}
+
+	public List<String> fetchApprovedRequests() {
+		final ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_APPROVED_REQUESTS_INFO);
+		final List<String> dataPoints = new ArrayList<>();
+
+		try {
+			while (resultSet.next()) {
+				String data = String.format("%d, %s, %d, %s", 
+						resultSet.getInt(UsersTable.USER_ID_COLUMN),
+						resultSet.getString(UsersTable.NAME_COLUMN),
+						resultSet.getInt(CoursesTable.COURSE_ID_COLUMN),
+						resultSet.getString(CoursesTable.COURSE_TITLE_COLUMN)
+				);
+
+				dataPoints.add(data);
+
+				if (Log.isDebug()) {
+					Logger.debug(TAG, data);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return dataPoints;
 	}
 }

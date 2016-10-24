@@ -1,5 +1,6 @@
 package net.usrlib.cms.main;
 
+import java.util.List;
 import java.util.Scanner;
 
 import net.usrlib.cms.digest.Digest;
@@ -85,7 +86,11 @@ public class Main {
 	}
 
 	public static void displayRequests() {
+		final List<String> dataPoints = Digest.fetchApprovedRequests();
 
+		for (String data : dataPoints) {
+			System.out.println(data);
+		}
 	}
 
 	public static void displaySeats() {
