@@ -16,9 +16,9 @@ public class Main {
 	}
 
 	public static void startUpWithDigest() {
+		DbHelper.dropTables();
 		DbHelper.createTables();
 		Digest.loadCsvData();
-		Digest.connectToDb();
 
 		// Digest Output
 		System.out.println(Digest.getNumberOfCourseRequests());
@@ -30,7 +30,7 @@ public class Main {
 (4) the number of requests that were denied the course was already taken
 (5) the number of requests that were denied because of a lack of available seats
  */
-		Digest.disconnectFromDb();
+		//DbHelper.closeConnection();
 	}
 
 	public static void enterCommandLoop() {
@@ -72,7 +72,8 @@ public class Main {
 
 	public static void exitCommandLoop() {
 		log("> stopping the command loop");
-		DbHelper.dropTables();
+		//DbHelper.dropTables();
+		DbHelper.closeConnection();
 	}
 
 	public static void displayRequests() {

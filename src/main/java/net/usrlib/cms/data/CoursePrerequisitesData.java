@@ -1,11 +1,11 @@
 package net.usrlib.cms.data;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import net.usrlib.cms.sql.CoursePrerequisitesTable;
 import net.usrlib.cms.util.CsvDataLoader;
+import net.usrlib.cms.util.DbHelper;
 
 public class CoursePrerequisitesData extends CsvDataLoader {
 	public static final String FILE_NAME = "prereqs.csv";
@@ -15,8 +15,8 @@ public class CoursePrerequisitesData extends CsvDataLoader {
 	}
 
 	@Override
-	public void populateCsvDataToDb(final Connection connection, final String[] rawDataArray) {
-		if (connection == null || rawDataArray.length == 0) {
+	public void populateCsvDataToDb(final String[] rawDataArray) {
+		if (rawDataArray.length == 0) {
 			return;
 		}
 
@@ -29,7 +29,7 @@ public class CoursePrerequisitesData extends CsvDataLoader {
 			String[] parts = line.split(",");
 			if (parts.length > 0) {
 				try {
-					preparedStatement = connection.prepareStatement(CoursePrerequisitesTable.INSERT_SQL);
+					preparedStatement = DbHelper.getConnection().prepareStatement(CoursePrerequisitesTable.INSERT_SQL);
 					preparedStatement.setInt(1, Integer.valueOf(parts[0]));
 					preparedStatement.setInt(2, Integer.valueOf(parts[1]));
 

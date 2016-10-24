@@ -1,12 +1,12 @@
 package net.usrlib.cms.data;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import net.usrlib.cms.course.LetterGrade;
-import net.usrlib.cms.sql.RecordsTable;
+import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.util.CsvDataLoader;
+import net.usrlib.cms.util.DbHelper;
 
 public class RecordsData extends CsvDataLoader {
 	public static final String FILE_NAME = "records.csv";
@@ -16,8 +16,8 @@ public class RecordsData extends CsvDataLoader {
 	}
 
 	@Override
-	public void populateCsvDataToDb(final Connection connection, final String[] rawDataArray) {
-		if (connection == null || rawDataArray.length == 0) {
+	public void populateCsvDataToDb(final String[] rawDataArray) {
+		if (rawDataArray.length == 0) {
 			return;
 		}
 
@@ -30,7 +30,7 @@ public class RecordsData extends CsvDataLoader {
 			String[] parts = line.split(",");
 			if (parts.length > 0) {
 				try {
-					preparedStatement = connection.prepareStatement(RecordsTable.INSERT_SQL);
+					preparedStatement = DbHelper.getConnection().prepareStatement(AcademicRecordsTable.INSERT_SQL);
 					preparedStatement.setInt(1, Integer.valueOf(parts[0]));
 					preparedStatement.setInt(2, Integer.valueOf(parts[1]));
 					preparedStatement.setInt(3, Integer.valueOf(parts[2]));

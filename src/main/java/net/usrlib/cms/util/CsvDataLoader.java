@@ -1,12 +1,10 @@
 package net.usrlib.cms.util;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 public class CsvDataLoader {
 	public CsvDataLoader(final String fileName) {
 		String[] rawDataArray = null;
-		Connection connection = null;
 
 		try {
 			rawDataArray = loadDataFromFile(fileName);
@@ -14,11 +12,8 @@ public class CsvDataLoader {
 			e.printStackTrace();
 		}
 
-		connection = DbHelper.getConnection();
-
-		if (connection != null && rawDataArray != null) {
-			populateCsvDataToDb(connection, rawDataArray);
-			DbHelper.closeConnection(connection);
+		if (rawDataArray != null) {
+			populateCsvDataToDb(rawDataArray);
 		}
 	}
 
@@ -40,5 +35,5 @@ public class CsvDataLoader {
 	}
 
 	// Override in subclass if needed
-	public void populateCsvDataToDb(final Connection connection, final String[] rawDataArray) {}
+	public void populateCsvDataToDb(final String[] rawDataArray) {}
 }

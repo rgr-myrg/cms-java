@@ -30,6 +30,11 @@ public class CourseAssignmentsTable {
 			"SELECT COUNT(%s) AS total FROM %s", 
 			ID_COLUMN, TABLE_NAME
 	);
+
+	public static final String SELECT_CAPACITY_BY_COURSE_ID = String.format(
+			"SELECT %s FROM %s WHERE %s = ?",
+			CAPACITY_COLUMN, TABLE_NAME, COURSE_ID_COLUMN
+	);
 }
 
 /*

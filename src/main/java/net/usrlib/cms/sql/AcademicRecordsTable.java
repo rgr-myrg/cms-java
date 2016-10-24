@@ -1,6 +1,8 @@
 package net.usrlib.cms.sql;
 
-public class RecordsTable {
+import net.usrlib.cms.course.LetterGrade;
+
+public class AcademicRecordsTable {
 	public static final String TABLE_NAME = "STUDENT_RECORDS";
 
 	public static final String ID_COLUMN = "_id";
@@ -45,4 +47,19 @@ public class RecordsTable {
 											+ STUDENT_ID_COLUMN 
 											+ ") AS total FROM " 
 											+ TABLE_NAME;
+
+//	public static final String SELECT_PREREQ_PASSING_GRADE = String.format(
+//			"%s WHERE %s = ? AND %s = ? AND %s NOT IN (%d, %d)", 
+//			SELECT_COUNT, STUDENT_ID_COLUMN, COURSE_ID_COLUMN, LETTER_GRADE_COLUMN, LetterGrade.F.ordinal(), LetterGrade.W.ordinal()
+//	);
+	public static final String SELECT_COURSE = String.format(
+			"SELECT * FROM %s WHERE %s = ? AND %s = ?", 
+			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+	);
+
+	public static final String SELECT_COURSE_BY_ID = String.format(
+			"SELECT * FROM %s WHERE %s = ? AND %s = ?",
+			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+	);
+
 }

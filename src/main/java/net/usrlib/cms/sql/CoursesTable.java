@@ -38,8 +38,8 @@ public class CoursesTable {
 	public static final String SELECT_COUNT_WITHOUT_STUDENTS = SELECT_COUNT 
 															 + " WHERE " + COURSE_ID_COLUMN 
 															 + " NOT IN ("
-															 + " SELECT " + RecordsTable.COURSE_ID_COLUMN
-															 + " FROM " + RecordsTable.TABLE_NAME
+															 + " SELECT " + AcademicRecordsTable.COURSE_ID_COLUMN
+															 + " FROM " + AcademicRecordsTable.TABLE_NAME
 															 + " )";
 
 	public static final String SELECT_COUNT_FOR_FALL_COURSES = SELECT_COUNT + " WHERE " + SEMESTERS_COLUMN + " LIKE '%Fall%'";
