@@ -3,6 +3,7 @@ package net.usrlib.cms.main;
 import java.util.Scanner;
 
 import net.usrlib.cms.digest.Digest;
+import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.util.DbHelper;
 
 public class Main {
@@ -10,6 +11,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+
+		if (args != null && args.length > 0 && args[0] != null) {
+			final String option = args[0];
+			Log.setDebug(option.equalsIgnoreCase("debug"));
+		}
 
 		startUpWithDigest();
 		enterCommandLoop();

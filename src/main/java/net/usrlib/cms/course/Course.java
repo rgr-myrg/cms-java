@@ -5,11 +5,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.usrlib.cms.logger.Log;
+import net.usrlib.cms.logger.Logger;
 import net.usrlib.cms.sql.CourseAssignmentsTable;
 import net.usrlib.cms.sql.CoursePrerequisitesTable;
 import net.usrlib.cms.util.DbHelper;
 
 public class Course {
+	public static final String TAG = Course.class.getSimpleName();
+
 	private int courseId;
 	private String title;
 	private String description;
@@ -26,15 +30,32 @@ public class Course {
 		return courseId;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public List<Semester> getSemestersOffered() {
+		return semestersOffered;
+	}
+
 	public List<Course> getPrerequisites() {
 		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
 		final ResultSet resultSet = DbHelper.doSql(sqlString);
 
-		System.out.println("getPrerequisites: " + sqlString);
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+		}
 
 		try {
 			if (!resultSet.isBeforeFirst()) {
-				//System.out.println("***** No prerequisite data found for this course. Done.");
+				if (Log.isDebug()) {
+					Logger.debug(TAG, "No prerequisite data found for this course");
+				}
+
 				prerequisites = new ArrayList<>();
 			} else {
 				while (resultSet.next()) {
@@ -50,6 +71,14 @@ public class Course {
 		return prerequisites;
 	}
 
+	public List<CourseAssignment> getAssignments() {
+		return assignments;
+	}
+
+	public CourseStatus getCourseStatus() {
+		return courseStatus;
+	}
+
 	public boolean isCourseSeatAvailable() throws SQLException {
 		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
 				.replaceFirst("\\?", String.valueOf(courseId));
@@ -58,7 +87,6 @@ public class Course {
 		int capacityCount = 0;
 
 		if (!resultSet.isBeforeFirst()) {
-			System.out.println("> No capacity found for this course. Done.");
 			capacityCount = -1;
 		} else {
 			while (resultSet.next()) {
@@ -67,7 +95,11 @@ public class Course {
 		}
 
 		resultSet.close();
-		System.out.println("capacityCount: " + capacityCount);
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+			Logger.debug(TAG, "capacityCount: " + capacityCount);
+		}
 
 		return capacityCount > 0;
 	}

@@ -1,27 +1,31 @@
 package net.usrlib.cms.sql;
 
+import net.usrlib.cms.course.CourseRequestStatus;
+
 public class CourseRequestsTable {
 	public static final String TABLE_NAME = "COURSE_REQUESTS";
 
 	public static final String ID_COLUMN = "_id";
 	public static final String STUDENT_ID_COLUMN  = "studentUuid";
 	public static final String COURSE_ID_COLUMN = "courseId";
+	public static final String REQUEST_STATUS_COLUMN = "requestStatus";
 
 	public static final String CREATE_TABLE = String.format(
 			"CREATE TABLE IF NOT EXISTS %s (" 
 					+ "%s INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ "%s INTEGER NOT NULL,"
 					+ "%s INTEGER NOT NULL,"
+					+ "%s INTEGER NOT NULL,"
 					+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
 					+ ")",
-					TABLE_NAME, ID_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+					TABLE_NAME, ID_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REQUEST_STATUS_COLUMN
 	);
 
 	public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
 
 	public static final String INSERT_SQL = String.format(
-			"INSERT INTO %s (%s, %s) VALUES (?, ?)", 
-			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+			"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", 
+			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REQUEST_STATUS_COLUMN
 	);
 
 	public static final String SELECT_COUNT = String.format(
@@ -29,9 +33,9 @@ public class CourseRequestsTable {
 			ID_COLUMN, TABLE_NAME
 	);
 
-	public static final String SELECT_ALL = String.format(
-			"select * FROM %s",
-			TABLE_NAME
+	public static final String SELECT_OPEN_REQUESTS = String.format(
+			"select * FROM %s WHERE %s = %d",
+			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.OPEN.ordinal()
 	);
 }
 

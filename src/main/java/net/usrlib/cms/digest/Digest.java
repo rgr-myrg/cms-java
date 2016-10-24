@@ -98,7 +98,7 @@ public class Digest {
 	public static final int getNumberOfValidCourseRequestsXXX() {
 		System.out.println("getNumberOfValidCourseRequests");
 		// select from requests table
-		ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_ALL);
+		ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_OPEN_REQUESTS);
 
 		try {
 			while (resultSet.next()) {
