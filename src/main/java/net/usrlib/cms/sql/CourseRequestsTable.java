@@ -37,6 +37,11 @@ public class CourseRequestsTable {
 			"select * FROM %s WHERE %s = %d",
 			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.OPEN.ordinal()
 	);
+
+	public static final String UPDATE_REQUESTS_TO_PROCESSED = String.format(
+			"UPDATE %s SET %s = %d WHERE %s = ? AND %s = ?",
+			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.PROCESSED.ordinal(), STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+	);
 }
 
 /*

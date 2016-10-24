@@ -103,4 +103,28 @@ public class Course {
 
 		return capacityCount > 0;
 	}
+
+	public void decrementCourseCapacity() throws SQLException {
+		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+				.replaceFirst("\\?", String.valueOf(courseId));
+
+		final ResultSet resultSet = DbHelper.doSql(sqlString);
+
+		while (resultSet.next()) {
+			int capacity = resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+
+			if (capacity > 0) {
+				String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
+						.replaceFirst("\\?", String.valueOf(capacity - 1))
+						.replaceFirst("\\?", resultSet.getString(CourseAssignmentsTable.ID_COLUMN));
+
+				if (Log.isDebug()) {
+					Logger.debug(TAG, sqlString);
+				}
+
+				DbHelper.doUpdateSql(updateSql);
+				break;
+			}
+		}
+	}
 }

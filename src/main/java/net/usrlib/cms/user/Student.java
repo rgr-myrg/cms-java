@@ -7,21 +7,32 @@ import java.util.List;
 import net.usrlib.cms.EnrollmentStatus;
 import net.usrlib.cms.StudentAcademicRecord;
 import net.usrlib.cms.course.Course;
+import net.usrlib.cms.course.CourseDeniedCategory;
 import net.usrlib.cms.course.LetterGrade;
 import net.usrlib.cms.course.StudentCourseCatalog;
+import net.usrlib.cms.logger.Log;
+import net.usrlib.cms.logger.Logger;
 import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.UsersTable;
 import net.usrlib.cms.util.DbHelper;
 
 public class Student extends User {
+	public static final String TAG = Student.class.getSimpleName();
+
 	private EnrollmentStatus enrollmentStatus;
 	private List<StudentAcademicRecord> studentRecords;
 	private StudentCourseCatalog studentCourseCatalog;
 	private List<Course> registeredCourseList;
 
+	private CourseDeniedCategory courseDeniedReason = CourseDeniedCategory.NO_AVAILABLE_SEATS;
+
 	public Student(int uuid) {
 		final String sqlString = UsersTable.SELECT_STUDENT_BY_ID.replaceFirst("\\?", String.valueOf(uuid));
 		final ResultSet resultSet = DbHelper.doSql(sqlString);
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+		}
 
 		this.uuid = uuid;
 
@@ -51,6 +62,10 @@ public class Student extends User {
 		return registeredCourseList;
 	}
 
+	public CourseDeniedCategory getCourseDeniedReason() {
+		return courseDeniedReason;
+	}
+
 	public boolean hasTakenCoursePreviously(final Course course) throws SQLException {
 		final String sqlString = AcademicRecordsTable.SELECT_COURSE_BY_ID
 				.replaceFirst("\\?", String.valueOf(uuid))
@@ -58,26 +73,32 @@ public class Student extends User {
 
 		final ResultSet resultSet = DbHelper.doSql(sqlString);
 
-		boolean result = false;
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+		}
 
 		if (!resultSet.isBeforeFirst()) {
-			System.out.println("> No academic data found for this course. Done.");
+			if (Log.isDebug()) {
+				Logger.debug(TAG, "No academic data found for this course");
+			}
+
 			resultSet.close();
-			return result;
+			return false;
 		}
 
-		while (resultSet.next()) {
-			int letterGrade = resultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN);
-			System.out.println("hasTakenCoursePreviously letterGrade: " + letterGrade);
-			if (letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal()) {
-				result = false;
-			} else {
-				result = true;
-			}
-		}
+		resultSet.next();
+
+		int letterGrade = resultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN);
 
 		resultSet.close();
-		return result;
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, String.format("hasTakenCoursePreviously letterGrade: %s", letterGrade));
+		}
+
+		courseDeniedReason = CourseDeniedCategory.COURSE_ALREADY_TAKEN;
+
+		return !(letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal());
 	}
 
 	public boolean hasCoursePrerequisites(final Course course) throws SQLException {
@@ -85,23 +106,31 @@ public class Student extends User {
 		boolean result = true;
 
 		if (preRequisites.size() == 0 || preRequisites.isEmpty()) {
-			System.out.println("No prerequisite data found for this course. Done.");
+			if (Log.isDebug()) {
+				Logger.debug(TAG, "preRequisites list is empty");
+			}
+
 			return result;
 		}
 
 		for(Course item : preRequisites) {
-			System.out.println("> checking preReqCourseId: " + item.getCourseId());
 			String sql = AcademicRecordsTable.SELECT_COURSE_BY_ID
 					.replaceFirst("\\?", String.valueOf(uuid))
 					.replaceFirst("\\?", String.valueOf(item.getCourseId()));
 
-			System.out.println("SQL: " + sql);
+			if (Log.isDebug()) {
+				Logger.debug(TAG, sql);
+			}
 
 			ResultSet academicRecordsResultSet = DbHelper.doSql(sql);
 
 			if (!academicRecordsResultSet.isBeforeFirst()) {
-				System.out.println("No academicRecordsResultSet found.");
+				if (Log.isDebug()) {
+					Logger.debug(TAG, "No academicRecordsResultSet found");
+				}
+
 				academicRecordsResultSet.close();
+
 				result = false;
 				break;
 			}
@@ -112,14 +141,14 @@ public class Student extends User {
 
 			academicRecordsResultSet.close();
 
-			System.out.println("LETTER_GRADE: " + letterGrade);
-
-			if (letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal()) {
-				result = false;
-			} else {
-				result = true;
+			if (Log.isDebug()) {
+				Logger.debug(TAG, String.format("hasCoursePrerequisites letterGrade: %s", letterGrade));
 			}
+
+			result = !(letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal());
 		}
+
+		courseDeniedReason = CourseDeniedCategory.MISSING_PREREQUISITES;
 
 		return result;
 	}

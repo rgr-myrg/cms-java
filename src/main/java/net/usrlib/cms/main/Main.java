@@ -29,14 +29,16 @@ public class Main {
 		// Digest Output
 		System.out.println(Digest.getNumberOfCourseRequests());
 		System.out.println(Digest.getNumberOfValidCourseRequests());
-/*
-(1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
-(2) the number of valid (granted) requests
-(3) the number of requests that were denied because of one or more missing prerequisites
-(4) the number of requests that were denied the course was already taken
-(5) the number of requests that were denied because of a lack of available seats
- */
-		//DbHelper.closeConnection();
+		System.out.println(Digest.getNumberOfMissingPrerequisites());
+		System.out.println(Digest.getNumberOfCourseAlreadyTaken());
+		System.out.println(Digest.getNumberOfNoOfAvailableSeats());
+		/*
+		(1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
+		(2) the number of valid (granted) requests
+		(3) the number of requests that were denied because of one or more missing prerequisites
+		(4) the number of requests that were denied the course was already taken
+		(5) the number of requests that were denied because of a lack of available seats
+		 */
 	}
 
 	public static void enterCommandLoop() {

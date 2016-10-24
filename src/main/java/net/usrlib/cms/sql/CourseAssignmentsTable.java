@@ -32,8 +32,13 @@ public class CourseAssignmentsTable {
 	);
 
 	public static final String SELECT_CAPACITY_BY_COURSE_ID = String.format(
-			"SELECT %s FROM %s WHERE %s = ?",
-			CAPACITY_COLUMN, TABLE_NAME, COURSE_ID_COLUMN
+			"SELECT * FROM %s WHERE %s = ?",
+			TABLE_NAME, COURSE_ID_COLUMN
+	);
+
+	public static final String UPDATE_CAPACITY_BY_RECORD_ID = String.format(
+			"UPDATE %s SET %s = ? WHERE %s = ?",
+			TABLE_NAME, CAPACITY_COLUMN, ID_COLUMN
 	);
 }
 

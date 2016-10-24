@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.CourseAssignmentsTable;
@@ -131,6 +132,24 @@ public class DbHelper {
 		return resultSet;
 	}
 
+	public static final boolean doUpdateSql(final String sqlStr) {
+		final Connection conn = getConnection();
+		int result = 0;
+
+		if (conn == null || sqlStr == null) {
+			return false;
+		}
+
+		try {
+			final Statement statement = conn.createStatement();
+			result = statement.executeUpdate(sqlStr);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result > 0;
+	}
+
 	public static final int getCountOf(final String sqlStr) {
 		final Connection conn = getConnection();
 		int total = -1;
@@ -149,4 +168,5 @@ public class DbHelper {
 
 		return total;
 	}
+
 }

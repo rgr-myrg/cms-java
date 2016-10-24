@@ -1,8 +1,5 @@
 package net.usrlib.cms.digest;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import net.usrlib.cms.data.CourseAssignmentsData;
 import net.usrlib.cms.data.CoursePrerequisitesData;
 import net.usrlib.cms.data.CourseRequestsData;
@@ -15,25 +12,10 @@ import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.UsersTable;
 import net.usrlib.cms.user.Admin;
-import net.usrlib.cms.user.Student;
 import net.usrlib.cms.util.DbHelper;
 
 public class Digest {
-	//private static Connection connection;
-
-//	public static final void connectToDb() {
-//		if (connection == null) {
-//			connection = DbHelper.getConnection();
-//		}
-//	}
-//
-//	public static final void disconnectFromDb() {
-//		if (connection == null) {
-//			return;
-//		}
-//
-//		DbHelper.closeConnection();
-//	}
+	public static final Admin admin = new Admin();
 
 	public static final void loadCsvData() {
 		CoursesData.load();
@@ -86,68 +68,31 @@ public class Digest {
 	}
 
 	// Assignment 5 Getters
+	/*
+	 * (1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
+	 * (2) the number of valid (granted) requests
+	 * (3) the number of requests that were denied because of one or more missing prerequisites
+	 * (4) the number of requests that were denied the course was already taken
+	 * (5) the number of requests that were denied because of a lack of available seats
+	 */
 	public static final int getNumberOfCourseRequests() {
 		return DbHelper.getCountOf(CourseRequestsTable.SELECT_COUNT);
 	}
 
 	public static final int getNumberOfValidCourseRequests() {
-		Admin admin = new Admin();
 		return admin.processRegistrationRequests();
 	}
 
-	public static final int getNumberOfValidCourseRequestsXXX() {
-		System.out.println("getNumberOfValidCourseRequests");
-		// select from requests table
-		ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_OPEN_REQUESTS);
+	public static final int getNumberOfMissingPrerequisites() {
+		return admin.getMissingPreReqsCount();
+	}
 
-		try {
-			while (resultSet.next()) {
-				int studentUuid = resultSet.getInt(CourseRequestsTable.STUDENT_ID_COLUMN);
-				int courseId = resultSet.getInt(CourseRequestsTable.COURSE_ID_COLUMN);
+	public static final int getNumberOfCourseAlreadyTaken() {
+		return admin.getCoursesAlreadyTakenCount();
+	}
 
-				System.out.println("-> studentUuid: " + studentUuid);
-				System.out.println("-> courseId: " + courseId);
-
-//				ResultSet studentResultSet = DbHelper.doSql(UsersTable.SELECT_STUDENT_BY_ID + studentUuid);
-//
-//				Student student = new Student(
-//					studentUuid,
-//					studentResultSet.getString(UsersTable.NAME_COLUMN),
-//					studentResultSet.getString(UsersTable.ADDRESS_COLUMN),
-//					studentResultSet.getString(UsersTable.PHONE_COLUMN),
-//					UserRole.STUDENT
-//				);
-
-			//	Student student = new Student(studentUuid);
-			//	student.registerForCourse(courseId);
-
-//				Course course = new Course();
-//				course.setCourseId(courseId);
-
-//				final ResultSet preReqResultSet = DbHelper.doSql(CoursePrerequisitesTable.SELECT_PREREQUISITES + courseId);
-//
-//				while (preReqResultSet.next()) {
-//					//System.out.println("-> preReqResultSet: " + preReqResultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN));
-//					String sql = AcademicRecordsTable.SELECT_PREREQ_PASSING_GRADE
-//							.replaceFirst("\\?", String.valueOf(studentUuid))
-//							.replaceFirst("\\?", String.valueOf(preReqResultSet.getInt(CoursePrerequisitesTable.PREREQ_ID_COLUMN)))
-//							;
-//					System.out.println("SQL: " + sql);
-//
-//					ResultSet pass = DbHelper.doSql(sql);
-//					System.out.println("> pass: " + pass.getInt("total"));
-//				}
-	
-//				final String sql = String.format(
-//						"SELECT * FROM %s WHERE %s = %d AND %s IN (%d, %d, %d, %d",
-//				);
-				//System.out.println(studentUuid + ":" + courseId + ":" + student.getPhone());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		// process each entry
-		return 0;
+	public static final int getNumberOfNoOfAvailableSeats() {
+		return admin.getNoAvailableSeatsCount();
 	}
 }
 

@@ -1,7 +1,5 @@
 package net.usrlib.cms.sql;
 
-import net.usrlib.cms.course.LetterGrade;
-
 public class AcademicRecordsTable {
 	public static final String TABLE_NAME = "STUDENT_RECORDS";
 
@@ -47,11 +45,6 @@ public class AcademicRecordsTable {
 											+ STUDENT_ID_COLUMN 
 											+ ") AS total FROM " 
 											+ TABLE_NAME;
-
-//	public static final String SELECT_COURSE = String.format(
-//			"SELECT * FROM %s WHERE %s = ? AND %s = ?", 
-//			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
-//	);
 
 	public static final String SELECT_COURSE_BY_ID = String.format(
 			"SELECT * FROM %s WHERE %s = ? AND %s = ?",
