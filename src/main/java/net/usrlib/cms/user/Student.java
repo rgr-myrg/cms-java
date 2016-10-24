@@ -46,45 +46,45 @@ public class Student extends User {
 	//canRegisterForCourse
 	//isCourseSeatAvailable
 
-	public void registerForCourse(final int courseId) {
-//		final Course course = new Course();
-//		course.setCourseId(courseId);
-
-		// check pre-requisites
-
-		try {
-//			if (hasCoursePrerequisites(courseId)) {
-//				System.out.println("checkCoursePrerequisites OK");
-//				if (hasTakenCoursePreviously(courseId)) {
-//					System.out.println("hasTakenCoursePreviously true. Deny this request");
-//				} else {
-//					System.out.println("hasTakenCoursePreviously false");
-//					if (isCourseSeatAvailable(courseId)) {
-//						System.out.println("isCourseSeatAvailable YEP!!!");
-//					} else {
-//						System.out.println("isCourseSeatAvailable NO SEATS!!!");
-//					}
-//				}
+//	public void registerForCourse(final int courseId) {
+////		final Course course = new Course();
+////		course.setCourseId(courseId);
+//
+//		// check pre-requisites
+//
+//		try {
+////			if (hasCoursePrerequisites(courseId)) {
+////				System.out.println("checkCoursePrerequisites OK");
+////				if (hasTakenCoursePreviously(courseId)) {
+////					System.out.println("hasTakenCoursePreviously true. Deny this request");
+////				} else {
+////					System.out.println("hasTakenCoursePreviously false");
+////					if (isCourseSeatAvailable(courseId)) {
+////						System.out.println("isCourseSeatAvailable YEP!!!");
+////					} else {
+////						System.out.println("isCourseSeatAvailable NO SEATS!!!");
+////					}
+////				}
+////			} else {
+////				System.out.println("checkCoursePrerequisites NOPE!. Deny this request");
+////			}
+//
+//			Course course = new Course(courseId);
+//
+//			if (hasCoursePrerequisites(course) && !hasTakenCoursePreviously(course) && course.isCourseSeatAvailable()) {
+//				System.out.println("Request is Valid");
+//				// process request and register the student
+//				// decrement course capacity
 //			} else {
-//				System.out.println("checkCoursePrerequisites NOPE!. Deny this request");
+//				System.out.println("Deny this request");
 //			}
-
-			Course course = new Course(courseId);
-
-			if (hasCoursePrerequisites(course) && !hasTakenCoursePreviously(course) && course.isCourseSeatAvailable()) {
-				System.out.println("Request is Valid");
-				// process request and register the student
-				// decrement course capacity
-			} else {
-				System.out.println("Deny this request");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		// check if course was taken and passed
-		// check available seats
-	}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		// check if course was taken and passed
+//		// check available seats
+//	}
 
 //	public boolean isCourseSeatAvailable(final int courseId) throws SQLException {
 //		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID

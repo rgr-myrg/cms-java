@@ -14,6 +14,7 @@ import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.UsersTable;
+import net.usrlib.cms.user.Admin;
 import net.usrlib.cms.user.Student;
 import net.usrlib.cms.util.DbHelper;
 
@@ -90,6 +91,11 @@ public class Digest {
 	}
 
 	public static final int getNumberOfValidCourseRequests() {
+		Admin admin = new Admin();
+		return admin.processRegistrationRequests();
+	}
+
+	public static final int getNumberOfValidCourseRequestsXXX() {
 		System.out.println("getNumberOfValidCourseRequests");
 		// select from requests table
 		ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_ALL);
@@ -112,8 +118,8 @@ public class Digest {
 //					UserRole.STUDENT
 //				);
 
-				Student student = new Student(studentUuid);
-				student.registerForCourse(courseId);
+			//	Student student = new Student(studentUuid);
+			//	student.registerForCourse(courseId);
 
 //				Course course = new Course();
 //				course.setCourseId(courseId);
