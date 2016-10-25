@@ -85,6 +85,7 @@ public class Admin extends User {
 					validRequests++;
 				}
 			}
+
 			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -97,9 +98,11 @@ public class Admin extends User {
 		boolean validRequest = false;
 
 		try {
-			if (student.hasCoursePrerequisites(course) && !student.hasTakenCoursePreviously(course) && course.isCourseSeatAvailable()) {
-				// process request and register the student
-				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_TO_PROCESSED
+			if (student.hasCoursePrerequisites(course) 
+					&& !student.hasTakenCoursePreviously(course) 
+					&& course.isCourseSeatAvailable()) {
+
+				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_TO_APPROVED
 						.replaceFirst("\\?", String.valueOf(student.getUuid()))
 						.replaceFirst("\\?", String.valueOf(course.getCourseId())
 				);
@@ -115,11 +118,20 @@ public class Admin extends User {
 
 				validRequest = true;
 			} else {
+				final CourseDeniedCategory deniedReason = student.getCourseDeniedReason();
+
+				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_WITH_DENIED_REASON
+						.replaceFirst("\\?", String.valueOf(deniedReason.ordinal()))
+						.replaceFirst("\\?", String.valueOf(student.getUuid()))
+						.replaceFirst("\\?", String.valueOf(course.getCourseId())
+				);
+
 				if (Log.isDebug()) {
-					Logger.debug(TAG, "Request is DENIED. Reason: " + student.getCourseDeniedReason());
+					Logger.debug(TAG, "Request is DENIED. Reason: " + deniedReason);
+					Logger.debug(TAG, updateSql);
 				}
 
-				final CourseDeniedCategory deniedReason = student.getCourseDeniedReason();
+				DbHelper.doUpdateSql(updateSql);
 
 				switch (deniedReason) {
 					case MISSING_PREREQUISITES:
@@ -176,6 +188,44 @@ public class Admin extends User {
 						AcademicRecordsTable.LETTER_GRADE_COLUMN
 				}
 		);
+	}
+
+	public String fetchDeniedRequestReason(final int studentUuid, final int courseId) {
+		final String sqlString = CourseRequestsTable.SELECT_REQUEST_BY_STUDENT_ID_AND_COURSE_ID
+				.replaceFirst("\\?", String.valueOf(studentUuid))
+				.replaceFirst("\\?", String.valueOf(courseId));
+
+		final ResultSet resultSet = DbHelper.doSql(sqlString);
+		String deniedMessage = "";
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+		}
+
+		try {
+			while (resultSet.next()) {
+				CourseDeniedCategory deniedReason = CourseDeniedCategory
+						.values()[resultSet.getInt(CourseRequestsTable.DENIED_REASON_COLUMN)];
+	
+				switch (deniedReason) {
+					case MISSING_PREREQUISITES:
+						deniedMessage = "> student is missing one or more prerequisites";
+						break;
+					case COURSE_ALREADY_TAKEN:
+						deniedMessage = "> student has already taken the course with a grade of C or higher";
+						break;
+					case NO_AVAILABLE_SEATS:
+						deniedMessage = "> no remaining seats available for the course at this time";
+						break;
+				}
+			}
+
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return deniedMessage;
 	}
 
 	private List<String> fetchFromDbAndFormatResult(final String sql, final String[] columns) {

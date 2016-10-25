@@ -81,7 +81,7 @@ public class Digest {
 		return DbHelper.getCountOf(CourseRequestsTable.SELECT_COUNT);
 	}
 
-	public static final int getNumberOfValidCourseRequests() {
+	public static final int startUpAndGetNumberOfValidCourseRequests() {
 		return admin.processRegistrationRequests();
 	}
 
@@ -107,6 +107,10 @@ public class Digest {
 
 	public static final List<String> fetchAcademicRecordsInfo() {
 		return admin.fetchAcademicRecordsInfo();
+	}
+
+	public static final String checkRequest(final int studentUuid, final int courseId) {
+		return admin.fetchDeniedRequestReason(studentUuid, courseId);
 	}
 }
 

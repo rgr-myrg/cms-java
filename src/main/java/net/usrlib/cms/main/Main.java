@@ -29,7 +29,7 @@ public class Main {
 
 		// Digest Main Output
 		System.out.println(Digest.getNumberOfCourseRequests());
-		System.out.println(Digest.getNumberOfValidCourseRequests());
+		System.out.println(Digest.startUpAndGetNumberOfValidCourseRequests());
 		System.out.println(Digest.getNumberOfMissingPrerequisites());
 		System.out.println(Digest.getNumberOfCourseAlreadyTaken());
 		System.out.println(Digest.getNumberOfNoAvailableSeats());
@@ -65,7 +65,7 @@ public class Main {
 				printList(Digest.fetchAcademicRecordsInfo());
 
 			} else if (command.startsWith("check_request")) {
-				checkRequest(command);
+				System.out.println(checkRequest(command));
 
 			} else if (command.startsWith("add_record")) {
 				addRecord(command);
@@ -85,12 +85,21 @@ public class Main {
 		DbHelper.closeConnection();
 	}
 
-	public static void checkRequest(final String command) {
+	public static String checkRequest(final String command) {
+		// Ex: check_request,15,29
+		String[] parts = command.split(",");
 
+		if (parts.length < 2) {
+			return "";
+		}
+
+		// checkRequest() also processes requests per requirements
+		Digest.startUpAndGetNumberOfValidCourseRequests();
+		return Digest.checkRequest(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
 	}
 
 	public static void addRecord(final String command) {
-
+		
 	}
 
 	public static void addSeats(final String command) {
