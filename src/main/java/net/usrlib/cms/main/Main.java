@@ -56,13 +56,16 @@ public class Main {
 				exitCommandLoop();
 
 			} else if (command.equals("display_requests")) {
-				displayRequests();
+				//displayRequests();
+				printList(Digest.fetchApprovedRequestsInfo());
 
 			} else if (command.equals("display_seats")) {
-				displaySeats();
+				//displaySeats();
+				printList(Digest.fetchCourseAssignmentsInfo());
 
 			} else if (command.equals("display_records")) {
-				displayRecords();
+				//displayRecords();
+				printList(Digest.fetchAcademicRecordsInfo());
 
 			} else if (command.startsWith("check_request")) {
 				checkRequest(command);
@@ -91,18 +94,20 @@ public class Main {
 		for (String data : dataPoints) {
 			System.out.println(data);
 		}
+		printList(Digest.fetchApprovedRequestsInfo());
 	}
 
 	public static void displaySeats() {
-		final List<String> dataPoints = Digest.fetchCourseAssignmentsInfo();
-
-		for (String data : dataPoints) {
-			System.out.println(data);
-		}
+//		final List<String> dataPoints = Digest.fetchCourseAssignmentsInfo();
+//
+//		for (String data : dataPoints) {
+//			System.out.println(data);
+//		}
+		printList(Digest.fetchCourseAssignmentsInfo());
 	}
 
 	public static void displayRecords() {
-
+		printList(Digest.fetchAcademicRecordsInfo());
 	}
 
 	public static void checkRequest(final String command) {
@@ -119,6 +124,12 @@ public class Main {
 
 	public static void log(final String message) {
 		System.out.println(System.lineSeparator() + message);
+	}
+
+	public static void printList(final List<String> list) {
+		for (String item : list) {
+			System.out.println(item);
+		}
 	}
 
 	public final static class ShutdownHook extends Thread {

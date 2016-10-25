@@ -7,8 +7,10 @@ import java.util.List;
 
 import net.usrlib.cms.course.Course;
 import net.usrlib.cms.course.CourseDeniedCategory;
+import net.usrlib.cms.course.LetterGrade;
 import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.logger.Logger;
+import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.CourseAssignmentsTable;
 import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
@@ -83,6 +85,7 @@ public class Admin extends User {
 					validRequests++;
 				}
 			}
+			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -158,6 +161,8 @@ public class Admin extends User {
 					Logger.debug(TAG, data);
 				}
 			}
+
+			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -183,6 +188,36 @@ public class Admin extends User {
 					Logger.debug(TAG, data);
 				}
 			}
+
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return dataPoints;
+	}
+
+	public List<String> fetchAcademicRecordsInfo() {
+		final ResultSet resultSet = DbHelper.doSql(AcademicRecordsTable.SELECT_SQL);
+		final List<String> dataPoints = new ArrayList<>();
+
+		try {
+			while (resultSet.next()) {
+				String data = String.format("%d, %d, %d, %s, %s", 
+						resultSet.getInt(AcademicRecordsTable.STUDENT_ID_COLUMN),
+						resultSet.getInt(AcademicRecordsTable.COURSE_ID_COLUMN),
+						resultSet.getInt(AcademicRecordsTable.INSTRUCTOR_ID_COLUMN),
+						resultSet.getString(AcademicRecordsTable.COMMENTS_COLUMN),
+						LetterGrade.values()[resultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN)]
+				);
+
+				dataPoints.add(data);
+
+				if (Log.isDebug()) {
+					Logger.debug(TAG, data);
+				}
+			}
+
+			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

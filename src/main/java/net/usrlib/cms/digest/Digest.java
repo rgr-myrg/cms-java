@@ -104,6 +104,10 @@ public class Digest {
 	public static final List<String> fetchCourseAssignmentsInfo() {
 		return admin.fetchCourseAssignmentsInfo();
 	}
+
+	public static final List<String> fetchAcademicRecordsInfo() {
+		return admin.fetchAcademicRecordsInfo();
+	}
 }
 
 /*
