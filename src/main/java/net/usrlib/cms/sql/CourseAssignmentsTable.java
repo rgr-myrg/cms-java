@@ -40,6 +40,14 @@ public class CourseAssignmentsTable {
 			"UPDATE %s SET %s = ? WHERE %s = ?",
 			TABLE_NAME, CAPACITY_COLUMN, ID_COLUMN
 	);
+
+	public static final String SELECT_CAPACITY_INFO = 
+			"SELECT COURSES.courseId AS courseId, "
+				+ "COURSES.courseTitle AS courseTitle, "
+				+ "COURSE_ASSIGNMENTS.capacity as capacity "
+				+ "FROM COURSES "
+				//+ "LEFT JOIN COURSE_ASSIGNMENTS ON COURSES.courseId = COURSE_ASSIGNMENTS.courseId "
+				+ "LEFT JOIN COURSE_ASSIGNMENTS USING (courseId) GROUP BY courseId";
 }
 
 /*

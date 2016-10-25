@@ -9,6 +9,7 @@ import net.usrlib.cms.course.Course;
 import net.usrlib.cms.course.CourseDeniedCategory;
 import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.logger.Logger;
+import net.usrlib.cms.sql.CourseAssignmentsTable;
 import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.UsersTable;
@@ -138,7 +139,7 @@ public class Admin extends User {
 		return validRequest;
 	}
 
-	public List<String> fetchApprovedRequests() {
+	public List<String> fetchApprovedRequestsInfo() {
 		final ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_APPROVED_REQUESTS_INFO);
 		final List<String> dataPoints = new ArrayList<>();
 
@@ -161,6 +162,30 @@ public class Admin extends User {
 			e.printStackTrace();
 		}
 
+		return dataPoints;
+	}
+
+	public List<String> fetchCourseAssignmentsInfo() {
+		final ResultSet resultSet = DbHelper.doSql(CourseAssignmentsTable.SELECT_CAPACITY_INFO);
+		final List<String> dataPoints = new ArrayList<>();
+
+		try {
+			while (resultSet.next()) {
+				String data = String.format("%d, %s, %d", 
+						resultSet.getInt(CourseAssignmentsTable.COURSE_ID_COLUMN),
+						resultSet.getString(CoursesTable.COURSE_TITLE_COLUMN),
+						resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN)
+				);
+
+				dataPoints.add(data);
+
+				if (Log.isDebug()) {
+					Logger.debug(TAG, data);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return dataPoints;
 	}
 }

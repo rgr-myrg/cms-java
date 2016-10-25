@@ -97,8 +97,12 @@ public class Digest {
 		return admin.getNoAvailableSeatsCount();
 	}
 
-	public static final List<String> fetchApprovedRequests() {
-		return admin.fetchApprovedRequests();
+	public static final List<String> fetchApprovedRequestsInfo() {
+		return admin.fetchApprovedRequestsInfo();
+	}
+
+	public static final List<String> fetchCourseAssignmentsInfo() {
+		return admin.fetchCourseAssignmentsInfo();
 	}
 }
 

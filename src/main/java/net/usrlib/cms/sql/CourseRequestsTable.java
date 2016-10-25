@@ -57,22 +57,6 @@ public class CourseRequestsTable {
 				+ "WHERE %s = %d",
 			REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal()
 	);
-
-	/*
-	 * SELECT
-  Songs._id AS song_id,
-  Songs.name AS song_name, 
-  Songs.length, 
-  Songs.artist_id AS artist_id, 
-  Artists.name AS artist_name, 
-  Songs.album_id AS album_id, 
-  Albums.name AS album_name
-FROM 
- Songs 
- LEFT JOIN Artists ON Songs.artist_id = Artists._id
- LEFT JOIN Albums ON Songs.album_id = Albums._id
-
-	 */
 }
 
 /*

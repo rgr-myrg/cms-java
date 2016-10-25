@@ -86,7 +86,7 @@ public class Main {
 	}
 
 	public static void displayRequests() {
-		final List<String> dataPoints = Digest.fetchApprovedRequests();
+		final List<String> dataPoints = Digest.fetchApprovedRequestsInfo();
 
 		for (String data : dataPoints) {
 			System.out.println(data);
@@ -94,7 +94,11 @@ public class Main {
 	}
 
 	public static void displaySeats() {
+		final List<String> dataPoints = Digest.fetchCourseAssignmentsInfo();
 
+		for (String data : dataPoints) {
+			System.out.println(data);
+		}
 	}
 
 	public static void displayRecords() {
