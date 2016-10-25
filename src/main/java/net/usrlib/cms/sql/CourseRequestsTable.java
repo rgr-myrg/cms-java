@@ -41,12 +41,12 @@ public class CourseRequestsTable {
 	);
 
 	public static final String UPDATE_REQUESTS_TO_APPROVED = String.format(
-			"UPDATE %s SET %s = %d WHERE %s = ? AND %s = ?",
+			"UPDATE %s SET %s = %d, timestamp = CURRENT_TIMESTAMP WHERE %s = ? AND %s = ?",
 			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal(), STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
 
 	public static final String SELECT_APPROVED_REQUESTS = String.format(
-			"SELECT * FROM %s WHERE %s = %d",
+			"SELECT * FROM %s WHERE %s = %d ORDER BY COURSE_REQUESTS._id",
 			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal()
 	);
 
@@ -56,7 +56,7 @@ public class CourseRequestsTable {
 				+ "FROM COURSE_REQUESTS "
 				+ "LEFT JOIN USERS ON COURSE_REQUESTS.studentUuid = USERS.userUuid "
 				+ "LEFT JOIN COURSES ON COURSE_REQUESTS.courseId = COURSES.courseId "
-				+ "WHERE %s = %d",
+				+ "WHERE %s = %d ORDER BY COURSE_REQUESTS.timestamp",
 			REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal()
 	);
 
@@ -65,21 +65,10 @@ public class CourseRequestsTable {
 			TABLE_NAME, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
 
-//	public static final String SELECT_REQUEST_BY_STUDENT_ID_AND_COURSE_ID = String.format(
-//			"SELECT * FROM %s WHERE %s = %d AND %s = ? AND %s = ?",
-//			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.DENIED.ordinal(), 
-//			STUDENT_ID_COLUMN, COURSE_ID_COLUMN
-//	);
-
 	public static final String UPDATE_REQUESTS_WITH_DENIED_REASON = String.format(
 			"UPDATE %s SET %s = ? WHERE %s = ? AND %s = ?",
 			TABLE_NAME, DENIED_REASON_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
-//	public static final String UPDATE_REQUESTS_WITH_DENIED_REASON = String.format(
-//			"UPDATE %s SET %s = %d, %s = ? WHERE %s = ? AND %s = ?",
-//			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.DENIED.ordinal(), 
-//			DENIED_REASON_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
-//	);
 }
 
 /*

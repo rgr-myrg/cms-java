@@ -50,6 +50,10 @@ public class Main {
 
 			String command = scanner.next();
 
+			if (scanner.hasNextLine()) {
+				command += scanner.nextLine();
+			}
+
 			if (command.equals("quit")) {
 				scanner.close();
 				done = true;
@@ -68,10 +72,10 @@ public class Main {
 				System.out.println(checkRequest(command));
 
 			} else if (command.startsWith("add_record")) {
-				addRecord(command);
+				Digest.addRecord(command.replace("add_record,", ""));
 
 			} else if (command.startsWith("add_seats")) {
-				addSeats(command);
+				Digest.addSeats(command.replace("add_seats,", ""));
 
 			} else {
 				log(String.format("> unknown command %s", command));
@@ -96,14 +100,6 @@ public class Main {
 		// checkRequest() also processes requests per requirements
 		Digest.startUpAndGetNumberOfValidCourseRequests();
 		return Digest.checkRequest(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
-	}
-
-	public static void addRecord(final String command) {
-		
-	}
-
-	public static void addSeats(final String command) {
-
 	}
 
 	public static void log(final String message) {

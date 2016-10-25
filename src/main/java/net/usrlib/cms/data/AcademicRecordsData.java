@@ -8,10 +8,10 @@ import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.util.CsvDataLoader;
 import net.usrlib.cms.util.DbHelper;
 
-public class RecordsData extends CsvDataLoader {
+public class AcademicRecordsData extends CsvDataLoader {
 	public static final String FILE_NAME = "records.csv";
 
-	public RecordsData() {
+	public AcademicRecordsData() {
 		super(FILE_NAME);
 	}
 
@@ -46,6 +46,6 @@ public class RecordsData extends CsvDataLoader {
 	}
 
 	public static final void load() {
-		new RecordsData();
+		new AcademicRecordsData();
 	}
 }

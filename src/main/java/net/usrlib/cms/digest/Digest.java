@@ -7,7 +7,7 @@ import net.usrlib.cms.data.CoursePrerequisitesData;
 import net.usrlib.cms.data.CourseRequestsData;
 import net.usrlib.cms.data.CoursesData;
 import net.usrlib.cms.data.InstructorsData;
-import net.usrlib.cms.data.RecordsData;
+import net.usrlib.cms.data.AcademicRecordsData;
 import net.usrlib.cms.data.StudentsData;
 import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.CourseRequestsTable;
@@ -22,7 +22,7 @@ public class Digest {
 	public static final void loadCsvData() {
 		CoursesData.load();
 		InstructorsData.load();
-		RecordsData.load();
+		AcademicRecordsData.load();
 		StudentsData.load();
 		CourseAssignmentsData.load();
 		CoursePrerequisitesData.load();
@@ -111,6 +111,14 @@ public class Digest {
 
 	public static final String checkRequest(final int studentUuid, final int courseId) {
 		return admin.fetchDeniedRequestReason(studentUuid, courseId);
+	}
+
+	public static final void addRecord(final String dataLine) {
+		admin.insertAcademicRecord(dataLine);
+	}
+
+	public static final void addSeats(final String dataLine) {
+		admin.increaseAvailableSeatsForCourse(dataLine);
 	}
 }
 

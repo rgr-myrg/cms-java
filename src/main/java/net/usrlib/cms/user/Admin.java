@@ -1,5 +1,6 @@
 package net.usrlib.cms.user;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -226,6 +227,70 @@ public class Admin extends User {
 		}
 
 		return deniedMessage;
+	}
+
+	public void insertAcademicRecord(final String dataLine) {
+		String[] parts = dataLine.split(",");
+
+		// Ex: 15,8,2,nice job,A
+		if (Log.isDebug()) {
+			Logger.debug(TAG, "insertAcademicRecord: " + dataLine);
+		}
+
+		if (parts.length < 5) {
+			return;
+		}
+
+		try {
+			PreparedStatement preparedStatement = DbHelper.getConnection()
+					.prepareStatement(AcademicRecordsTable.INSERT_SQL);
+
+			preparedStatement.setInt(1, Integer.valueOf(parts[0]));
+			preparedStatement.setInt(2, Integer.valueOf(parts[1]));
+			preparedStatement.setInt(3, Integer.valueOf(parts[2]));
+			preparedStatement.setString(4, parts[3]);
+			preparedStatement.setInt(5, LetterGrade.valueOf(parts[4]).ordinal());
+
+			preparedStatement.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void increaseAvailableSeatsForCourse(final String dataLine) {
+		String[] parts = dataLine.split(",");
+
+		// Ex: 13,3
+		if (parts.length < 2) {
+			return;
+		}
+
+		final int courseId = Integer.valueOf(parts[0]);
+		final int capacity = Integer.valueOf(parts[1]);
+
+		final ResultSet resultSet = DbHelper.doSql(
+				CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+					.replaceFirst("\\?", String.valueOf(courseId)));
+
+		try {
+			final int newCapacity = capacity + resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+			final int rowId = resultSet.getInt(CourseAssignmentsTable.ID_COLUMN);
+
+			resultSet.close();
+
+			String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
+					.replaceFirst("\\?", String.valueOf(newCapacity))
+					.replaceFirst("\\?", String.valueOf(rowId));
+
+			if (Log.isDebug()) {
+				Logger.debug(TAG, updateSql);
+			}
+
+			DbHelper.doUpdateSql(updateSql);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private List<String> fetchFromDbAndFormatResult(final String sql, final String[] columns) {
