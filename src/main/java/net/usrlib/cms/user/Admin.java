@@ -75,7 +75,7 @@ public class Admin extends User {
 				int courseId = resultSet.getInt(CourseRequestsTable.COURSE_ID_COLUMN);
 
 				if (Log.isDebug()) {
-					Logger.debug(TAG, String.format("Processing studentUuid:%s courseId:%s", studentUuid, courseId));
+					Logger.debug(TAG, String.format("Processing studentUuid: %s courseId: %s", studentUuid, courseId));
 				}
 
 				Student student = new Student(studentUuid);
@@ -143,84 +143,70 @@ public class Admin extends User {
 	}
 
 	public List<String> fetchApprovedRequestsInfo() {
-		final ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_APPROVED_REQUESTS_INFO);
-		final List<String> dataPoints = new ArrayList<>();
-
-		try {
-			while (resultSet.next()) {
-				String data = String.format("%d, %s, %d, %s", 
-						resultSet.getInt(UsersTable.USER_ID_COLUMN),
-						resultSet.getString(UsersTable.NAME_COLUMN),
-						resultSet.getInt(CoursesTable.COURSE_ID_COLUMN),
-						resultSet.getString(CoursesTable.COURSE_TITLE_COLUMN)
-				);
-
-				dataPoints.add(data);
-
-				if (Log.isDebug()) {
-					Logger.debug(TAG, data);
+		return fetchFromDbAndFormatResult(
+				CourseRequestsTable.SELECT_APPROVED_REQUESTS_INFO,
+				new String[] {
+						UsersTable.USER_ID_COLUMN,
+						UsersTable.NAME_COLUMN,
+						CoursesTable.COURSE_ID_COLUMN,
+						CoursesTable.COURSE_TITLE_COLUMN
 				}
-			}
-
-			resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return dataPoints;
+		);
 	}
 
 	public List<String> fetchCourseAssignmentsInfo() {
-		final ResultSet resultSet = DbHelper.doSql(CourseAssignmentsTable.SELECT_CAPACITY_INFO);
-		final List<String> dataPoints = new ArrayList<>();
-
-		try {
-			while (resultSet.next()) {
-				String data = String.format("%d, %s, %d", 
-						resultSet.getInt(CourseAssignmentsTable.COURSE_ID_COLUMN),
-						resultSet.getString(CoursesTable.COURSE_TITLE_COLUMN),
-						resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN)
-				);
-
-				dataPoints.add(data);
-
-				if (Log.isDebug()) {
-					Logger.debug(TAG, data);
+		return fetchFromDbAndFormatResult(
+				CourseAssignmentsTable.SELECT_CAPACITY_INFO,
+				new String[] {
+						CourseAssignmentsTable.COURSE_ID_COLUMN,
+						CoursesTable.COURSE_TITLE_COLUMN,
+						CourseAssignmentsTable.CAPACITY_COLUMN
 				}
-			}
-
-			resultSet.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return dataPoints;
+		);
 	}
 
 	public List<String> fetchAcademicRecordsInfo() {
-		final ResultSet resultSet = DbHelper.doSql(AcademicRecordsTable.SELECT_SQL);
+		return fetchFromDbAndFormatResult(
+				AcademicRecordsTable.SELECT_SQL,
+				new String[] {
+						AcademicRecordsTable.STUDENT_ID_COLUMN, 
+						AcademicRecordsTable.COURSE_ID_COLUMN, 
+						AcademicRecordsTable.INSTRUCTOR_ID_COLUMN, 
+						AcademicRecordsTable.COMMENTS_COLUMN, 
+						AcademicRecordsTable.LETTER_GRADE_COLUMN
+				}
+		);
+	}
+
+	private List<String> fetchFromDbAndFormatResult(final String sql, final String[] columns) {
+		final ResultSet resultSet = DbHelper.doSql(sql);
 		final List<String> dataPoints = new ArrayList<>();
+		final String joinByCommaAndSpace = ", ";
 
 		try {
 			while (resultSet.next()) {
-				String data = String.format("%d, %d, %d, %s, %s", 
-						resultSet.getInt(AcademicRecordsTable.STUDENT_ID_COLUMN),
-						resultSet.getInt(AcademicRecordsTable.COURSE_ID_COLUMN),
-						resultSet.getInt(AcademicRecordsTable.INSTRUCTOR_ID_COLUMN),
-						resultSet.getString(AcademicRecordsTable.COMMENTS_COLUMN),
-						LetterGrade.values()[resultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN)]
-				);
+				String data = "";
 
-				dataPoints.add(data);
+				for (String column : columns) {
+					String columnValue = column.equals(AcademicRecordsTable.LETTER_GRADE_COLUMN)
+								? LetterGrade.values()[resultSet.getInt(AcademicRecordsTable.LETTER_GRADE_COLUMN)].toString()
+									: column.equals(CourseAssignmentsTable.CAPACITY_COLUMN)
+										? String.valueOf(resultSet.getInt(column))
+											: resultSet.getString(column);
 
-				if (Log.isDebug()) {
-					Logger.debug(TAG, data);
+					data += String.format("%s%s", columnValue, joinByCommaAndSpace);
 				}
+
+				// Trim trailing comma and space
+				data = data.substring(0, data.length() - joinByCommaAndSpace.length());
+				dataPoints.add(data);
 			}
 
 			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		return dataPoints;
 	}
 }

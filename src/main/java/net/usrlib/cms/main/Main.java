@@ -27,12 +27,12 @@ public class Main {
 		DbHelper.createTables();
 		Digest.loadCsvData();
 
-		// Digest Output
+		// Digest Main Output
 		System.out.println(Digest.getNumberOfCourseRequests());
 		System.out.println(Digest.getNumberOfValidCourseRequests());
 		System.out.println(Digest.getNumberOfMissingPrerequisites());
 		System.out.println(Digest.getNumberOfCourseAlreadyTaken());
-		System.out.println(Digest.getNumberOfNoOfAvailableSeats());
+		System.out.println(Digest.getNumberOfNoAvailableSeats());
 		/*
 		(1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
 		(2) the number of valid (granted) requests
@@ -56,15 +56,12 @@ public class Main {
 				exitCommandLoop();
 
 			} else if (command.equals("display_requests")) {
-				//displayRequests();
 				printList(Digest.fetchApprovedRequestsInfo());
 
 			} else if (command.equals("display_seats")) {
-				//displaySeats();
 				printList(Digest.fetchCourseAssignmentsInfo());
 
 			} else if (command.equals("display_records")) {
-				//displayRecords();
 				printList(Digest.fetchAcademicRecordsInfo());
 
 			} else if (command.startsWith("check_request")) {
@@ -86,28 +83,6 @@ public class Main {
 		log("> stopping the command loop");
 		//DbHelper.dropTables();
 		DbHelper.closeConnection();
-	}
-
-	public static void displayRequests() {
-		final List<String> dataPoints = Digest.fetchApprovedRequestsInfo();
-
-		for (String data : dataPoints) {
-			System.out.println(data);
-		}
-		printList(Digest.fetchApprovedRequestsInfo());
-	}
-
-	public static void displaySeats() {
-//		final List<String> dataPoints = Digest.fetchCourseAssignmentsInfo();
-//
-//		for (String data : dataPoints) {
-//			System.out.println(data);
-//		}
-		printList(Digest.fetchCourseAssignmentsInfo());
-	}
-
-	public static void displayRecords() {
-		printList(Digest.fetchAcademicRecordsInfo());
 	}
 
 	public static void checkRequest(final String command) {

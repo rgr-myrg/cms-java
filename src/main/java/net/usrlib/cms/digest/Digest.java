@@ -93,7 +93,7 @@ public class Digest {
 		return admin.getCoursesAlreadyTakenCount();
 	}
 
-	public static final int getNumberOfNoOfAvailableSeats() {
+	public static final int getNumberOfNoAvailableSeats() {
 		return admin.getNoAvailableSeatsCount();
 	}
 
