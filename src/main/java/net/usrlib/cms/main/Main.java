@@ -28,11 +28,6 @@ public class Main {
 		Digest.loadCsvData();
 
 		// Digest Main Output
-		System.out.println(Digest.getNumberOfCourseRequests());
-		System.out.println(Digest.startUpAndGetNumberOfValidCourseRequests());
-		System.out.println(Digest.getNumberOfMissingPrerequisites());
-		System.out.println(Digest.getNumberOfCourseAlreadyTaken());
-		System.out.println(Digest.getNumberOfNoAvailableSeats());
 		/*
 		(1) the total number of records in the requests.csv file (don’t count blank lines, etc.)
 		(2) the number of valid (granted) requests
@@ -40,6 +35,11 @@ public class Main {
 		(4) the number of requests that were denied the course was already taken
 		(5) the number of requests that were denied because of a lack of available seats
 		 */
+		System.out.println(Digest.getNumberOfCourseRequests());
+		System.out.println(Digest.getNumberOfValidCourseRequests());
+		System.out.println(Digest.getNumberOfMissingPrerequisites());
+		System.out.println(Digest.getNumberOfCourseAlreadyTaken());
+		System.out.println(Digest.getNumberOfNoAvailableSeats());
 	}
 
 	public static void enterCommandLoop() {
@@ -68,13 +68,13 @@ public class Main {
 			} else if (command.equals("display_records")) {
 				printList(Digest.fetchAcademicRecordsInfo());
 
-			} else if (command.startsWith("check_request")) {
+			} else if (command.startsWith("check_request,")) {
 				System.out.println(checkRequest(command));
 
-			} else if (command.startsWith("add_record")) {
+			} else if (command.startsWith("add_record,")) {
 				Digest.addRecord(command.replace("add_record,", ""));
 
-			} else if (command.startsWith("add_seats")) {
+			} else if (command.startsWith("add_seats,")) {
 				Digest.addSeats(command.replace("add_seats,", ""));
 
 			} else {
@@ -98,7 +98,7 @@ public class Main {
 		}
 
 		// checkRequest() also processes requests per requirements
-		Digest.startUpAndGetNumberOfValidCourseRequests();
+		Digest.getNumberOfValidCourseRequests();
 		return Digest.checkRequest(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
 	}
 

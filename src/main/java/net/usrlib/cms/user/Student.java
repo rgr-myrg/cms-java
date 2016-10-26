@@ -4,27 +4,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import net.usrlib.cms.EnrollmentStatus;
-import net.usrlib.cms.StudentAcademicRecord;
 import net.usrlib.cms.course.Course;
-import net.usrlib.cms.course.CourseDeniedCategory;
+import net.usrlib.cms.course.CourseRequestRemark;
 import net.usrlib.cms.course.LetterGrade;
-import net.usrlib.cms.course.StudentCourseCatalog;
 import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.logger.Logger;
 import net.usrlib.cms.sql.AcademicRecordsTable;
 import net.usrlib.cms.sql.UsersTable;
+import net.usrlib.cms.student.StudentAcademicRecord;
+import net.usrlib.cms.student.StudentCourseCatalog;
+import net.usrlib.cms.student.StudentEnrollmentStatus;
 import net.usrlib.cms.util.DbHelper;
 
 public class Student extends User {
 	public static final String TAG = Student.class.getSimpleName();
 
-	private EnrollmentStatus enrollmentStatus;
+	private StudentEnrollmentStatus enrollmentStatus;
 	private List<StudentAcademicRecord> studentRecords;
 	private StudentCourseCatalog studentCourseCatalog;
 	private List<Course> registeredCourseList;
 
-	private CourseDeniedCategory courseDeniedReason = CourseDeniedCategory.NO_AVAILABLE_SEATS;
+	private CourseRequestRemark courseDeniedReason = CourseRequestRemark.NO_AVAILABLE_SEATS;
 
 	public Student(int uuid) {
 		final String sqlString = UsersTable.SELECT_STUDENT_BY_ID.replaceFirst("\\?", String.valueOf(uuid));
@@ -41,12 +41,14 @@ public class Student extends User {
 			this.address = resultSet.getString(UsersTable.ADDRESS_COLUMN);
 			this.phone = resultSet.getString(UsersTable.PHONE_COLUMN);
 			this.userRole = UserRole.STUDENT;
+
+			resultSet.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public EnrollmentStatus getEnrollmentStatus() {
+	public StudentEnrollmentStatus getEnrollmentStatus() {
 		return enrollmentStatus;
 	}
 
@@ -62,8 +64,12 @@ public class Student extends User {
 		return registeredCourseList;
 	}
 
-	public CourseDeniedCategory getCourseDeniedReason() {
+	public CourseRequestRemark getCourseDeniedReason() {
 		return courseDeniedReason;
+	}
+
+	public boolean requestCourseRegistration(final Course course) {
+		return true;
 	}
 
 	public boolean hasTakenCoursePreviously(final Course course) throws SQLException {
@@ -96,7 +102,7 @@ public class Student extends User {
 			Logger.debug(TAG, String.format("hasTakenCoursePreviously letterGrade: %s", letterGrade));
 		}
 
-		courseDeniedReason = CourseDeniedCategory.COURSE_ALREADY_TAKEN;
+		courseDeniedReason = CourseRequestRemark.COURSE_ALREADY_TAKEN;
 
 		return !(letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal());
 	}
@@ -148,7 +154,7 @@ public class Student extends User {
 			result = !(letterGrade == LetterGrade.F.ordinal() || letterGrade == LetterGrade.W.ordinal());
 		}
 
-		courseDeniedReason = CourseDeniedCategory.MISSING_PREREQUISITES;
+		courseDeniedReason = CourseRequestRemark.MISSING_PREREQUISITES;
 
 		return result;
 	}

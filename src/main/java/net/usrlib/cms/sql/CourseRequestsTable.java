@@ -9,7 +9,7 @@ public class CourseRequestsTable {
 	public static final String STUDENT_ID_COLUMN  = "studentUuid";
 	public static final String COURSE_ID_COLUMN = "courseId";
 	public static final String REQUEST_STATUS_COLUMN = "requestStatus";
-	public static final String DENIED_REASON_COLUMN = "deniedReason";
+	public static final String REMARK_COLUMN = "requestRemark";
 
 	public static final String CREATE_TABLE = String.format(
 			"CREATE TABLE IF NOT EXISTS %s (" 
@@ -20,7 +20,7 @@ public class CourseRequestsTable {
 					+ "%s INTEGER,"
 					+ "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"
 					+ ")",
-					TABLE_NAME, ID_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REQUEST_STATUS_COLUMN, DENIED_REASON_COLUMN
+					TABLE_NAME, ID_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REQUEST_STATUS_COLUMN, REMARK_COLUMN
 	);
 
 	public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
@@ -41,8 +41,10 @@ public class CourseRequestsTable {
 	);
 
 	public static final String UPDATE_REQUESTS_TO_APPROVED = String.format(
-			"UPDATE %s SET %s = %d, timestamp = CURRENT_TIMESTAMP WHERE %s = ? AND %s = ?",
-			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal(), STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+			"UPDATE %s SET %s = %d, timestamp = CURRENT_TIMESTAMP " 
+				+ "WHERE %s = ? AND %s = ? AND %s = ?",
+			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal(), 
+			STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REMARK_COLUMN
 	);
 
 	public static final String SELECT_APPROVED_REQUESTS = String.format(
@@ -67,7 +69,7 @@ public class CourseRequestsTable {
 
 	public static final String UPDATE_REQUESTS_WITH_DENIED_REASON = String.format(
 			"UPDATE %s SET %s = ? WHERE %s = ? AND %s = ?",
-			TABLE_NAME, DENIED_REASON_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
+			TABLE_NAME, REMARK_COLUMN, STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
 }
 

@@ -1,7 +1,8 @@
 package net.usrlib.cms.course;
 
-public enum CourseDeniedCategory {
+public enum CourseRequestRemark {
 	MISSING_PREREQUISITES,
 	COURSE_ALREADY_TAKEN,
-	NO_AVAILABLE_SEATS
+	NO_AVAILABLE_SEATS,
+	REQUEST_VALID
 }

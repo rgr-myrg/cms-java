@@ -1,13 +1,14 @@
 package net.usrlib.cms.user;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.usrlib.cms.course.Course;
-import net.usrlib.cms.course.CourseDeniedCategory;
+import net.usrlib.cms.course.CourseRequest;
+import net.usrlib.cms.course.CourseRequestRemark;
+import net.usrlib.cms.course.CourseRequestStatus;
 import net.usrlib.cms.course.LetterGrade;
 import net.usrlib.cms.logger.Log;
 import net.usrlib.cms.logger.Logger;
@@ -24,6 +25,8 @@ public class Admin extends User {
 	private int missingPreReqsCount = 0;
 	private int coursesAlreadyTakenCount = 0;
 	private int noAvailableSeatsCount = 0;
+
+	private List<CourseRequest> courseRequests = new ArrayList<>();
 
 	public int getMissingPreReqsCount() {
 		return missingPreReqsCount;
@@ -66,7 +69,7 @@ public class Admin extends User {
 	public void removeCourseAssignment() {
 	}
 
-	public int processRegistrationRequests() {
+	public int processCourseRequests() {
 		final ResultSet resultSet = DbHelper.doSql(CourseRequestsTable.SELECT_OPEN_REQUESTS);
 		int validRequests = 0;
 
@@ -96,6 +99,7 @@ public class Admin extends User {
 	}
 
 	public boolean registerStudentForCourse(final Student student, final Course course) {
+		CourseRequest courseRequest = new CourseRequest(student.getUuid(), course.getCourseId());
 		boolean validRequest = false;
 
 		try {
@@ -106,7 +110,11 @@ public class Admin extends User {
 				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_TO_APPROVED
 						.replaceFirst("\\?", String.valueOf(student.getUuid()))
 						.replaceFirst("\\?", String.valueOf(course.getCourseId())
+						.replaceFirst("\\?", String.valueOf(CourseRequestRemark.REQUEST_VALID.ordinal()))
 				);
+
+				courseRequest.setCourseRequestStatus(CourseRequestStatus.APPROVED);
+				courseRequest.setCourseRequestRemark(CourseRequestRemark.REQUEST_VALID);
 
 				if (Log.isDebug()) {
 					Logger.debug(TAG,"Request is Valid");
@@ -114,27 +122,27 @@ public class Admin extends User {
 				}
 
 				if (DbHelper.doUpdateSql(updateSql)) {
-					course.decrementCourseCapacity();
+					(new Instructor()).subtractCourseCapacity(course.getCourseId());
 				}
 
 				validRequest = true;
 			} else {
-				final CourseDeniedCategory deniedReason = student.getCourseDeniedReason();
+				final CourseRequestRemark requestRemark = student.getCourseDeniedReason();
 
 				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_WITH_DENIED_REASON
-						.replaceFirst("\\?", String.valueOf(deniedReason.ordinal()))
+						.replaceFirst("\\?", String.valueOf(requestRemark.ordinal()))
 						.replaceFirst("\\?", String.valueOf(student.getUuid()))
 						.replaceFirst("\\?", String.valueOf(course.getCourseId())
 				);
 
 				if (Log.isDebug()) {
-					Logger.debug(TAG, "Request is DENIED. Reason: " + deniedReason);
+					Logger.debug(TAG, "Request is DENIED. Reason: " + requestRemark);
 					Logger.debug(TAG, updateSql);
 				}
 
 				DbHelper.doUpdateSql(updateSql);
 
-				switch (deniedReason) {
+				switch (requestRemark) {
 					case MISSING_PREREQUISITES:
 						missingPreReqsCount++;
 						break;
@@ -144,13 +152,20 @@ public class Admin extends User {
 					case NO_AVAILABLE_SEATS:
 						noAvailableSeatsCount++;
 						break;
+					case REQUEST_VALID:
+						break;
 				}
+
+				courseRequest.setCourseRequestStatus(CourseRequestStatus.DENIED);
+				courseRequest.setCourseRequestRemark(requestRemark);
 
 				validRequest = false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		courseRequests.add(courseRequest);
 
 		return validRequest;
 	}
@@ -205,8 +220,8 @@ public class Admin extends User {
 
 		try {
 			while (resultSet.next()) {
-				CourseDeniedCategory deniedReason = CourseDeniedCategory
-						.values()[resultSet.getInt(CourseRequestsTable.DENIED_REASON_COLUMN)];
+				CourseRequestRemark deniedReason = CourseRequestRemark
+						.values()[resultSet.getInt(CourseRequestsTable.REMARK_COLUMN)];
 	
 				switch (deniedReason) {
 					case MISSING_PREREQUISITES:
@@ -217,6 +232,9 @@ public class Admin extends User {
 						break;
 					case NO_AVAILABLE_SEATS:
 						deniedMessage = "> no remaining seats available for the course at this time";
+						break;
+					case REQUEST_VALID:
+						deniedMessage = "> request is valid";
 						break;
 				}
 			}
@@ -229,69 +247,69 @@ public class Admin extends User {
 		return deniedMessage;
 	}
 
-	public void insertAcademicRecord(final String dataLine) {
-		String[] parts = dataLine.split(",");
+//	public void insertAcademicRecord(final String dataLine) {
+//		String[] parts = dataLine.split(",");
+//
+//		// Ex: 15,8,2,nice job,A
+//		if (Log.isDebug()) {
+//			Logger.debug(TAG, "insertAcademicRecord: " + dataLine);
+//		}
+//
+//		if (parts.length < 5) {
+//			return;
+//		}
+//
+//		try {
+//			PreparedStatement preparedStatement = DbHelper.getConnection()
+//					.prepareStatement(AcademicRecordsTable.INSERT_SQL);
+//
+//			preparedStatement.setInt(1, Integer.valueOf(parts[0]));
+//			preparedStatement.setInt(2, Integer.valueOf(parts[1]));
+//			preparedStatement.setInt(3, Integer.valueOf(parts[2]));
+//			preparedStatement.setString(4, parts[3]);
+//			preparedStatement.setInt(5, LetterGrade.valueOf(parts[4]).ordinal());
+//
+//			preparedStatement.execute();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
-		// Ex: 15,8,2,nice job,A
-		if (Log.isDebug()) {
-			Logger.debug(TAG, "insertAcademicRecord: " + dataLine);
-		}
-
-		if (parts.length < 5) {
-			return;
-		}
-
-		try {
-			PreparedStatement preparedStatement = DbHelper.getConnection()
-					.prepareStatement(AcademicRecordsTable.INSERT_SQL);
-
-			preparedStatement.setInt(1, Integer.valueOf(parts[0]));
-			preparedStatement.setInt(2, Integer.valueOf(parts[1]));
-			preparedStatement.setInt(3, Integer.valueOf(parts[2]));
-			preparedStatement.setString(4, parts[3]);
-			preparedStatement.setInt(5, LetterGrade.valueOf(parts[4]).ordinal());
-
-			preparedStatement.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void increaseAvailableSeatsForCourse(final String dataLine) {
-		String[] parts = dataLine.split(",");
-
-		// Ex: 13,3
-		if (parts.length < 2) {
-			return;
-		}
-
-		final int courseId = Integer.valueOf(parts[0]);
-		final int capacity = Integer.valueOf(parts[1]);
-
-		final ResultSet resultSet = DbHelper.doSql(
-				CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
-					.replaceFirst("\\?", String.valueOf(courseId)));
-
-		try {
-			final int newCapacity = capacity + resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
-			final int rowId = resultSet.getInt(CourseAssignmentsTable.ID_COLUMN);
-
-			resultSet.close();
-
-			String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
-					.replaceFirst("\\?", String.valueOf(newCapacity))
-					.replaceFirst("\\?", String.valueOf(rowId));
-
-			if (Log.isDebug()) {
-				Logger.debug(TAG, updateSql);
-			}
-
-			DbHelper.doUpdateSql(updateSql);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void increaseAvailableSeatsForCourse(final String dataLine) {
+//		String[] parts = dataLine.split(",");
+//
+//		// Ex: 13,3
+//		if (parts.length < 2) {
+//			return;
+//		}
+//
+//		final int courseId = Integer.valueOf(parts[0]);
+//		final int capacity = Integer.valueOf(parts[1]);
+//
+//		final ResultSet resultSet = DbHelper.doSql(
+//				CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+//					.replaceFirst("\\?", String.valueOf(courseId)));
+//
+//		try {
+//			final int newCapacity = capacity + resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+//			final int rowId = resultSet.getInt(CourseAssignmentsTable.ID_COLUMN);
+//
+//			resultSet.close();
+//
+//			String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
+//					.replaceFirst("\\?", String.valueOf(newCapacity))
+//					.replaceFirst("\\?", String.valueOf(rowId));
+//
+//			if (Log.isDebug()) {
+//				Logger.debug(TAG, updateSql);
+//			}
+//
+//			DbHelper.doUpdateSql(updateSql);
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	private List<String> fetchFromDbAndFormatResult(final String sql, final String[] columns) {
 		final ResultSet resultSet = DbHelper.doSql(sql);

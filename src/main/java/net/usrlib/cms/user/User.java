@@ -38,7 +38,7 @@ public abstract class User {
 		this.phone = phone;
 	}
 
-	public long getUuid() {
+	public int getUuid() {
 		return uuid;
 	}
 

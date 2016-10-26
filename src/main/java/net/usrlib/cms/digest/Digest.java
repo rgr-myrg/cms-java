@@ -14,10 +14,12 @@ import net.usrlib.cms.sql.CourseRequestsTable;
 import net.usrlib.cms.sql.CoursesTable;
 import net.usrlib.cms.sql.UsersTable;
 import net.usrlib.cms.user.Admin;
+import net.usrlib.cms.user.Instructor;
 import net.usrlib.cms.util.DbHelper;
 
 public class Digest {
 	public static final Admin admin = new Admin();
+	public static final Instructor instructor = new Instructor();
 
 	public static final void loadCsvData() {
 		CoursesData.load();
@@ -81,8 +83,8 @@ public class Digest {
 		return DbHelper.getCountOf(CourseRequestsTable.SELECT_COUNT);
 	}
 
-	public static final int startUpAndGetNumberOfValidCourseRequests() {
-		return admin.processRegistrationRequests();
+	public static final int getNumberOfValidCourseRequests() {
+		return admin.processCourseRequests();
 	}
 
 	public static final int getNumberOfMissingPrerequisites() {
@@ -114,11 +116,11 @@ public class Digest {
 	}
 
 	public static final void addRecord(final String dataLine) {
-		admin.insertAcademicRecord(dataLine);
+		instructor.insertAcademicRecord(dataLine);
 	}
 
 	public static final void addSeats(final String dataLine) {
-		admin.increaseAvailableSeatsForCourse(dataLine);
+		instructor.addCourseCapacity(dataLine);
 	}
 }
 

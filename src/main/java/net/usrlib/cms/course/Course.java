@@ -59,55 +59,6 @@ public class Course {
 		return courseStatus;
 	}
 
-	public boolean isCourseSeatAvailable() throws SQLException {
-		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
-				.replaceFirst("\\?", String.valueOf(courseId));
-
-		final ResultSet resultSet = DbHelper.doSql(sqlString);
-		int capacityCount = 0;
-
-		if (!resultSet.isBeforeFirst()) {
-			capacityCount = -1;
-		} else {
-			while (resultSet.next()) {
-				capacityCount += resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
-			}
-		}
-
-		resultSet.close();
-
-		if (Log.isDebug()) {
-			Logger.debug(TAG, sqlString);
-			Logger.debug(TAG, "capacityCount: " + capacityCount);
-		}
-
-		return capacityCount > 0;
-	}
-
-	public void decrementCourseCapacity() throws SQLException {
-		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
-				.replaceFirst("\\?", String.valueOf(courseId));
-
-		final ResultSet resultSet = DbHelper.doSql(sqlString);
-
-		while (resultSet.next()) {
-			int capacity = resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
-
-			if (capacity > 0) {
-				String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
-						.replaceFirst("\\?", String.valueOf(capacity - 1))
-						.replaceFirst("\\?", resultSet.getString(CourseAssignmentsTable.ID_COLUMN));
-
-				if (Log.isDebug()) {
-					Logger.debug(TAG, sqlString);
-				}
-
-				DbHelper.doUpdateSql(updateSql);
-				break;
-			}
-		}
-	}
-
 	public List<Course> fetchCoursePrerequisites() {
 		final String sqlString = CoursePrerequisitesTable.SELECT_PREREQUISITES.replaceFirst("\\?", String.valueOf(courseId));
 		final ResultSet resultSet = DbHelper.doSql(sqlString);
@@ -136,4 +87,54 @@ public class Course {
 
 		return prerequisites;
 	}
+
+	public boolean isCourseSeatAvailable() throws SQLException {
+		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+				.replaceFirst("\\?", String.valueOf(courseId));
+
+		final ResultSet resultSet = DbHelper.doSql(sqlString);
+		int capacityCount = 0;
+
+		if (!resultSet.isBeforeFirst()) {
+			capacityCount = -1;
+		} else {
+			while (resultSet.next()) {
+				capacityCount += resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+			}
+		}
+
+		resultSet.close();
+
+		if (Log.isDebug()) {
+			Logger.debug(TAG, sqlString);
+			Logger.debug(TAG, "capacityCount: " + capacityCount);
+		}
+
+		return capacityCount > 0;
+	}
+
+//	public void decrementCourseCapacity() throws SQLException {
+//		final String sqlString = CourseAssignmentsTable.SELECT_CAPACITY_BY_COURSE_ID
+//				.replaceFirst("\\?", String.valueOf(courseId));
+//
+//		final ResultSet resultSet = DbHelper.doSql(sqlString);
+//
+//		while (resultSet.next()) {
+//			int capacity = resultSet.getInt(CourseAssignmentsTable.CAPACITY_COLUMN);
+//
+//			if (capacity > 0) {
+//				String updateSql = CourseAssignmentsTable.UPDATE_CAPACITY_BY_RECORD_ID
+//						.replaceFirst("\\?", String.valueOf(capacity - 1))
+//						.replaceFirst("\\?", resultSet.getString(CourseAssignmentsTable.ID_COLUMN));
+//
+//				if (Log.isDebug()) {
+//					Logger.debug(TAG, sqlString);
+//				}
+//
+//				DbHelper.doUpdateSql(updateSql);
+//				break;
+//			}
+//		}
+//	}
+
 }
