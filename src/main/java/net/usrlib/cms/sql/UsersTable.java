@@ -25,7 +25,7 @@ public class UsersTable {
 											//	+ "UNIQUE (" + NAME_COLUMN + ") ON CONFLICT REPLACE"
 											+ ")";
 
-	public static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME;
+	public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 	public static final String INSERT_SQL = "INSERT INTO " + TABLE_NAME 
 											+ "(" 

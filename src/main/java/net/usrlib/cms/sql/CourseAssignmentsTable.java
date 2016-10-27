@@ -19,7 +19,7 @@ public class CourseAssignmentsTable {
 					TABLE_NAME, ID_COLUMN, INSTRUCTOR_ID_COLUMN, COURSE_ID_COLUMN, CAPACITY_COLUMN
 	);
 
-	public static final String DROP_TABLE = String.format("DROP TABLE %s", TABLE_NAME);
+	public static final String DROP_TABLE = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
 
 	public static final String INSERT_SQL = String.format(
 			"INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", 
