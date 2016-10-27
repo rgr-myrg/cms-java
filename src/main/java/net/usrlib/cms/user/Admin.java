@@ -110,7 +110,6 @@ public class Admin extends User {
 				final String updateSql = CourseRequestsTable.UPDATE_REQUESTS_TO_APPROVED
 						.replaceFirst("\\?", String.valueOf(student.getUuid()))
 						.replaceFirst("\\?", String.valueOf(course.getCourseId())
-						.replaceFirst("\\?", String.valueOf(CourseRequestRemark.REQUEST_VALID.ordinal()))
 				);
 
 				courseRequest.setCourseRequestStatus(CourseRequestStatus.APPROVED);
@@ -152,7 +151,7 @@ public class Admin extends User {
 					case NO_AVAILABLE_SEATS:
 						noAvailableSeatsCount++;
 						break;
-					case REQUEST_VALID:
+					default:
 						break;
 				}
 

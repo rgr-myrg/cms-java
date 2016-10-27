@@ -1,5 +1,6 @@
 package net.usrlib.cms.sql;
 
+import net.usrlib.cms.course.CourseRequestRemark;
 import net.usrlib.cms.course.CourseRequestStatus;
 
 public class CourseRequestsTable {
@@ -41,10 +42,11 @@ public class CourseRequestsTable {
 	);
 
 	public static final String UPDATE_REQUESTS_TO_APPROVED = String.format(
-			"UPDATE %s SET %s = %d, timestamp = CURRENT_TIMESTAMP " 
-				+ "WHERE %s = ? AND %s = ? AND %s = ?",
+			"UPDATE %s SET %s = %d, %s = %d, timestamp = CURRENT_TIMESTAMP " 
+				+ "WHERE %s = ? AND %s = ?",
 			TABLE_NAME, REQUEST_STATUS_COLUMN, CourseRequestStatus.APPROVED.ordinal(), 
-			STUDENT_ID_COLUMN, COURSE_ID_COLUMN, REMARK_COLUMN
+			REMARK_COLUMN, CourseRequestRemark.REQUEST_VALID.ordinal(), 
+			STUDENT_ID_COLUMN, COURSE_ID_COLUMN
 	);
 
 	public static final String SELECT_APPROVED_REQUESTS = String.format(
