@@ -49,7 +49,7 @@ public class Instructor extends User {
 
 			preparedStatement.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return academicRecord;
@@ -85,7 +85,7 @@ public class Instructor extends User {
 
 			courseAssignment.setCapacity(newCapacity);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return courseAssignment;

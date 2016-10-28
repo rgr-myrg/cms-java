@@ -92,7 +92,7 @@ public class Admin extends User {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return validRequests;
@@ -161,7 +161,7 @@ public class Admin extends User {
 				validRequest = false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		courseRequests.add(courseRequest);
@@ -240,7 +240,7 @@ public class Admin extends User {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return deniedMessage;
@@ -272,7 +272,7 @@ public class Admin extends User {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return dataPoints;

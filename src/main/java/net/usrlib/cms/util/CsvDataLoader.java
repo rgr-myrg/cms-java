@@ -9,7 +9,7 @@ public class CsvDataLoader {
 		try {
 			rawDataArray = loadDataFromFile(fileName);
 		} catch (InvalidInputException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		if (rawDataArray != null) {
@@ -23,7 +23,7 @@ public class CsvDataLoader {
 		try {
 			rawData = FileUtil.readFile(fileName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			rawData = null;
 		}
 

@@ -82,7 +82,7 @@ public class Course {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return prerequisites;

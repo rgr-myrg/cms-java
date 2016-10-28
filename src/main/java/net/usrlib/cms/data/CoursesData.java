@@ -41,7 +41,7 @@ public class CoursesData extends CsvDataLoader {
 					preparedStatement.setString(3, match.group(3));
 					preparedStatement.execute();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}

@@ -25,9 +25,9 @@ public class DbHelper {
 				Class.forName(SQLITE_JDBC_DRIVER);
 				connection = DriverManager.getConnection(DB_CONNECTION_URL);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 
@@ -42,7 +42,7 @@ public class DbHelper {
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -72,7 +72,7 @@ public class DbHelper {
 			preparedStatement = conn.prepareStatement(CourseRequestsTable.CREATE_TABLE);
 			preparedStatement.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -102,7 +102,7 @@ public class DbHelper {
 			preparedStatement = conn.prepareStatement(CourseRequestsTable.DROP_TABLE);
 			preparedStatement.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -126,7 +126,7 @@ public class DbHelper {
 			resultSet = preparedStatement.executeQuery();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return resultSet;
@@ -144,7 +144,7 @@ public class DbHelper {
 			final Statement statement = conn.createStatement();
 			result = statement.executeUpdate(sqlStr);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return result > 0;
@@ -163,7 +163,7 @@ public class DbHelper {
 		try {
 			total = resultSet.getInt("total");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return total;

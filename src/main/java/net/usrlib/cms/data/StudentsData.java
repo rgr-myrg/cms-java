@@ -39,7 +39,7 @@ public class StudentsData extends CsvDataLoader {
 
 					preparedStatement.execute();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}

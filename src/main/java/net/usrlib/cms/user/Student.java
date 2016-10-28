@@ -44,7 +44,7 @@ public class Student extends User {
 
 			resultSet.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
